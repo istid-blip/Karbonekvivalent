@@ -2,4 +2,6 @@ package com.sveis.karbonekvivalent
 
 import androidx.compose.ui.window.ComposeUIViewController
 
-fun MainViewController() = ComposeUIViewController { App() }
+import com.sveis.karbonekvivalent.data.DatabaseDriverFactory
+
+fun MainViewController() = ComposeUIViewController { App(DatabaseDriverFactory()) }
