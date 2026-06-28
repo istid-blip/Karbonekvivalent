@@ -11,6 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.sveis.karbonekvivalent.KEKalkulator
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -21,6 +22,7 @@ fun Hovedskjerm(
     language: String,
     onLanguageChange: (String) -> Unit,
     onNavigateToHistory: () -> Unit,
+    onNavigateToSettings: () -> Unit,
     onSave: (Double, Double, Double, Double, Double, Double, Double, Double) -> Unit
 ) {
     // State for alle kjemiske elementer
@@ -45,6 +47,9 @@ fun Hovedskjerm(
                 actions = {
                     IconButton(onClick = onNavigateToHistory) {
                         Icon(Icons.Default.History, contentDescription = "Historikk")
+                    }
+                    IconButton(onClick = onNavigateToSettings) {
+                        Icon(Icons.Default.Settings, contentDescription = "Innstillinger")
                     }
                     IconButton(onClick = onThemeChange) {
                         Text(if (darkTheme) "🌙" else "☀️")
@@ -144,6 +149,7 @@ fun HovedskjermRetroPreview() {
             language = "no",
             onLanguageChange = {},
             onNavigateToHistory = {},
+            onNavigateToSettings = {},
             onSave = { _, _, _, _, _, _, _, _ -> }
         )
     }
@@ -159,6 +165,7 @@ fun HovedskjermFinPreview() {
             language = "no",
             onLanguageChange = {},
             onNavigateToHistory = {},
+            onNavigateToSettings = {},
             onSave = { _, _, _, _, _, _, _, _ -> }
         )
     }

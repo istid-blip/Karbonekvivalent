@@ -4,7 +4,10 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.sveis.karbonekvivalent.uiKE.Hovedskjerm
 import com.sveis.karbonekvivalent.uiKE.HistorikkSkjerm
+import com.sveis.karbonekvivalent.uiKE.Innstillinger
 import com.sveis.karbonekvivalent.uiKE.AppTheme
+import com.sveis.karbonekvivalent.uiKE.AppThemeType
+import com.sveis.karbonekvivalent.uiKE.LengdeEnhet
 import com.sveis.karbonekvivalent.data.CeRepository
 import com.sveis.karbonekvivalent.data.DatabaseDriverFactory
 import com.sveis.karbonekvivalent.db.CeEntry
@@ -14,7 +17,7 @@ import kotlinx.coroutines.launch
  * Definerer de tilgjengelige skjermene i applikasjonen for enkel navigasjon.
  */
 enum class Screen {
-    Home, History
+    Home, History, Settings
 }
 
 /**
@@ -40,7 +43,7 @@ fun App(driverFactory: DatabaseDriverFactory) {
     // Henter alle lagrede bidrag som en strøm (Flow) og konverterer til Compose State
     val historyEntries by repository.getAllEntries().collectAsState(initial = emptyList())
 
-    AppTheme(darkTheme = darkTheme) {
+    AppTheme(valgtTema = if (darkTheme) AppThemeType.FIN else AppThemeType.RETRO) {
         when (currentScreen) {
             Screen.Home -> {
                 Hovedskjerm(
@@ -49,6 +52,7 @@ fun App(driverFactory: DatabaseDriverFactory) {
                     language = language,
                     onLanguageChange = { language = it },
                     onNavigateToHistory = { currentScreen = Screen.History },
+                    onNavigateToSettings = { currentScreen = Screen.Settings },
                     onSave = { c, mn, cr, mo, v, ni, cu, res ->
                         scope.launch {
                             repository.insertEntry(c, mn, cr, mo, v, ni, cu, res)
@@ -60,6 +64,18 @@ fun App(driverFactory: DatabaseDriverFactory) {
                 HistorikkSkjerm(
                     entries = historyEntries,
                     onBack = { currentScreen = Screen.Home }
+                )
+            }
+            Screen.Settings -> {
+                Innstillinger(
+                    database = null, // TODO: Send database
+                    valgtTema = if (darkTheme) AppThemeType.FIN else AppThemeType.RETRO,
+                    onTemaValgt = { darkTheme = (it == AppThemeType.FIN) },
+                    valgtEnhet = LengdeEnhet.MM,
+                    onEnhetValgt = { },
+                    valgtSprak = language,
+                    onSprakValgt = { language = it },
+                    onLukk = { currentScreen = Screen.Home }
                 )
             }
         }

@@ -14,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -33,10 +34,13 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Popup
 import androidx.compose.ui.window.PopupProperties
 import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.PathEffect
+import androidx.compose.ui.graphics.drawscope.Stroke
 
 @Composable
 fun StandardKort(
@@ -185,5 +189,225 @@ fun AnimerbartInputFelt(
                 .background(MaterialTheme.colorScheme.surface)
                 .padding(horizontal = 4.dp)
         )
+    }
+}
+
+@Composable
+fun InnstillingValgKort(
+    tittel: String,
+    hovedtekst: String,
+    undertekst: String,
+    infoTekst: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val isRetro = HeatInputTheme.current == AppThemeType.RETRO
+    val outlineColor = MaterialTheme.colorScheme.outlineVariant
+    val primaryColor = MaterialTheme.colorScheme.primary
+
+    Box(modifier = modifier.padding(vertical = 8.dp)) {
+        // Ytre ramme (instrumentpanelet)
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 8.dp)
+                .then(
+                    if (isRetro) {
+                        Modifier.drawBehind {
+                            val strokeWidth = 1.dp.toPx()
+                            val dashWidth = 8.dp.toPx()
+                            val gapWidth = 4.dp.toPx()
+                            drawRect(
+                                color = primaryColor.copy(alpha = 0.25f),
+                                style = Stroke(
+                                    width = strokeWidth,
+                                    pathEffect = PathEffect.dashPathEffect(floatArrayOf(dashWidth, gapWidth), 0f)
+                                )
+                            )
+                        }
+                    } else Modifier
+                ),
+            shape = if (isRetro) RoundedCornerShape(0.dp) else MaterialTheme.shapes.medium,
+            color = if (isRetro) primaryColor.copy(alpha = 0.03f) else Color.Transparent,
+            border = if (isRetro) null else BorderStroke(1.dp, outlineColor)
+        ) {
+            Column(modifier = Modifier.padding(bottom = 12.dp)) {
+                // Selve knappen inne i rammen
+                InnstillingKlikkFelt(
+                    hovedtekst = hovedtekst,
+                    undertekst = undertekst,
+                    onClick = onClick,
+                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 14.dp)
+                )
+
+                // Informasjonsfelt under knappen
+                Row(
+                    modifier = Modifier
+                        .padding(horizontal = 16.dp)
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.Top
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Info,
+                        contentDescription = null,
+                        tint = primaryColor.copy(alpha = 0.5f),
+                        modifier = Modifier.size(20.dp).padding(top = 2.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = infoTekst,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = if (isRetro) primaryColor.copy(alpha = 0.5f) else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+                        lineHeight = 14.sp
+                    )
+                }
+            }
+        }
+
+        // Informasjonsfeltet ("tittelen") som bryter rammelinjen
+        Surface(
+            color = MaterialTheme.colorScheme.background,
+            modifier = Modifier.padding(start = 12.dp)
+        ) {
+            Text(
+                text = if (isRetro) " ${tittel.uppercase()} " else " $tittel ",
+                style = MaterialTheme.typography.labelSmall,
+                color = primaryColor,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+@Composable
+fun InnstillingKlikkFelt(
+    hovedtekst: String,
+    undertekst: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val isRetro = HeatInputTheme.current == AppThemeType.RETRO
+    val primaryColor = MaterialTheme.colorScheme.primary
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+
+    val alpha by animateFloatAsState(
+        targetValue = if (isPressed) 1f else 0.7f,
+        label = "klikkFeltAlpha"
+    )
+
+    Surface(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(
+                interactionSource = interactionSource,
+                indication = null,
+                onClick = onClick
+            ),
+        shape = if (isRetro) RoundedCornerShape(0.dp) else MaterialTheme.shapes.small,
+        color = if (isRetro) {
+            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = alpha)
+        } else {
+            MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.2f * alpha)
+        },
+        border = BorderStroke(1.dp, primaryColor.copy(alpha = 0.8f * alpha))
+    ) {
+        Row(
+            modifier = Modifier.padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = if (isRetro) hovedtekst.uppercase() else hovedtekst,
+                    style = MaterialTheme.typography.bodyLarge.copy(
+                        letterSpacing = if (isRetro) 0.5.sp else TextUnit.Unspecified
+                    ),
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurface
+                )
+                Text(
+                    text = if (isRetro) undertekst.uppercase() else undertekst,
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        letterSpacing = if (isRetro) 0.3.sp else TextUnit.Unspecified
+                    ),
+                    color = if (isRetro) primaryColor else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                )
+            }
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                contentDescription = null,
+                tint = primaryColor.copy(alpha = 0.5f),
+                modifier = Modifier.size(20.dp)
+            )
+        }
+    }
+}
+
+@Composable
+fun <T> AppSwitcher(
+    selected: T,
+    options: List<T>,
+    onSelected: (T) -> Unit,
+    labelProvider: (T) -> String,
+    modifier: Modifier = Modifier
+) {
+    val isRetro = HeatInputTheme.current == AppThemeType.RETRO
+    val primaryColor = MaterialTheme.colorScheme.primary
+    val dimColor = if (isRetro) Color(0xFF004400) else MaterialTheme.colorScheme.outlineVariant
+    val shape = if (isRetro) RoundedCornerShape(0.dp) else RoundedCornerShape(12.dp)
+
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(44.dp)
+            .background(MaterialTheme.colorScheme.background)
+            .border(
+                width = if (isRetro) 1.5.dp else 1.dp,
+                color = dimColor,
+                shape = shape
+            )
+            .clip(shape)
+    ) {
+        options.forEach { option ->
+            val isSelected = option == selected
+            val haptic = LocalHapticFeedback.current
+            
+            val backgroundColor by animateColorAsState(
+                targetValue = if (isSelected) primaryColor else Color.Transparent,
+                animationSpec = tween(durationMillis = 200),
+                label = "BgColor"
+            )
+            val textColor by animateColorAsState(
+                targetValue = if (isSelected) {
+                    if (isRetro) Color.Black else MaterialTheme.colorScheme.onPrimary
+                } else {
+                    if (isRetro) Color(0xFF004400) else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+                },
+                animationSpec = tween(durationMillis = 200),
+                label = "TextColor"
+            )
+
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight()
+                    .background(backgroundColor)
+                    .clickable { 
+                        if (!isSelected) {
+                            haptic.performHapticFeedback(HapticFeedbackType.TextHandleMove) 
+                            onSelected(option) 
+                        }
+                    },
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = labelProvider(option),
+                    color = textColor,
+                    fontFamily = if (isRetro) FontFamily.Monospace else FontFamily.SansSerif,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp
+                )
+            }
+        }
     }
 }
