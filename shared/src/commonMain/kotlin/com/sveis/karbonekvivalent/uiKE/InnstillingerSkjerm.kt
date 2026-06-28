@@ -39,7 +39,6 @@ fun InnstillingerSkjerm(
     val primaryColor = MaterialTheme.colorScheme.primary
     val erNoeApen = visDisclaimerArk
     val useEdgeToEdge = LocalUseEdgeToEdge.current
-    val isRetro = valgtTema == AppThemeType.RETRO
 
     Box(
         modifier = modifier
@@ -52,11 +51,14 @@ fun InnstillingerSkjerm(
             )
     ) {
         // --- Header ---
+        val isRetro = valgtTema == AppThemeType.RETRO
         AppHeader(
             tittel = "INNSTILLINGER",
             hoyreIkon = Icons.AutoMirrored.Filled.ArrowForward,
             hoyreIkonBeskrivelse = "Tilbake",
-            onHoyreKlikk = onLukk
+            onHoyreKlikk = onLukk,
+            tittelAlignment = Alignment.CenterStart,
+            overrideFontSize = if (isRetro) 20.sp else 24.sp
         )
 
         Column(

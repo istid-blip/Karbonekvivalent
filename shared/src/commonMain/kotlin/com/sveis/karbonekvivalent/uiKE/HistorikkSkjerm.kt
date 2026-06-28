@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.sveis.karbonekvivalent.db.CeEntry
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -24,11 +25,14 @@ fun HistorikkSkjerm(
             swipeDirection = SwipeDirection.RIGHT
         ),
         topBar = {
+            val isRetro = HeatInputTheme.current == AppThemeType.RETRO
             AppHeader(
                 tittel = "Historikk",
                 venstreIkon = Icons.AutoMirrored.Filled.ArrowBack,
                 venstreIkonBeskrivelse = "Tilbake",
-                onVenstreKlikk = onBack
+                onVenstreKlikk = onBack,
+                tittelAlignment = Alignment.CenterEnd,
+                overrideFontSize = if (isRetro) 20.sp else 24.sp
             )
         }
     ) { padding ->

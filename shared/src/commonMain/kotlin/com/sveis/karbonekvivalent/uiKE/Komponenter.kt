@@ -476,6 +476,8 @@ fun AppHeader(
     hoyreIkonBeskrivelse: String? = null,
     onHoyreKlikk: (() -> Unit)? = null,
     dimmet: Boolean = false,
+    tittelAlignment: Alignment = Alignment.Center,
+    overrideFontSize: TextUnit? = null,
     modifier: Modifier = Modifier
 ) {
     val alpha by animateFloatAsState(if (dimmet) 0.4f else 1.0f, label = "headerAlpha")
@@ -490,7 +492,7 @@ fun AppHeader(
         if (venstreIkon != null && onVenstreKlikk != null) {
             IconButton(
                 onClick = onVenstreKlikk,
-                modifier = Modifier.align(Alignment.CenterStart),
+                modifier = Modifier.align(Alignment.CenterStart).padding(start = 4.dp),
                 enabled = !dimmet
             ) {
                 Icon(
@@ -502,20 +504,31 @@ fun AppHeader(
             }
         }
 
+        val textStyle = if (overrideFontSize != null) {
+            MaterialTheme.typography.headlineLarge.copy(fontSize = overrideFontSize)
+        } else {
+            MaterialTheme.typography.headlineLarge
+        }
+
         AutoResizedText(
             text = tittel.uppercase(),
-            style = MaterialTheme.typography.headlineLarge,
+            style = textStyle,
+            textAlign = when (tittelAlignment) {
+                Alignment.CenterStart -> TextAlign.Start
+                Alignment.CenterEnd -> TextAlign.End
+                else -> TextAlign.Center
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 60.dp)
-                .align(Alignment.Center),
+                .align(tittelAlignment),
             color = MaterialTheme.colorScheme.onSurface
         )
 
         if (hoyreIkon != null && onHoyreKlikk != null) {
             IconButton(
                 onClick = onHoyreKlikk,
-                modifier = Modifier.align(Alignment.CenterEnd),
+                modifier = Modifier.align(Alignment.CenterEnd).padding(end = 4.dp),
                 enabled = !dimmet
             ) {
                 Icon(
