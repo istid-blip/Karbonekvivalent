@@ -1,0 +1,165 @@
+package com.sveis.karbonekvivalent.uiKE
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import com.sveis.karbonekvivalent.KEKalkulator
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.History
+import androidx.compose.ui.tooling.preview.Preview
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun Hovedskjerm(
+    darkTheme: Boolean,
+    onThemeChange: () -> Unit,
+    language: String,
+    onLanguageChange: (String) -> Unit,
+    onNavigateToHistory: () -> Unit,
+    onSave: (Double, Double, Double, Double, Double, Double, Double, Double) -> Unit
+) {
+    // State for alle kjemiske elementer
+    var carbon by remember { mutableStateOf(0.15) }
+    var manganese by remember { mutableStateOf(1.20) }
+    var chromium by remember { mutableStateOf(0.0) }
+    var molybdenum by remember { mutableStateOf(0.0) }
+    var vanadium by remember { mutableStateOf(0.0) }
+    var nickel by remember { mutableStateOf(0.0) }
+    var copper by remember { mutableStateOf(0.0) }
+
+    var aktivtElement by remember { mutableStateOf<String?>(null) }
+
+    val ceResult = KEKalkulator.calculateCE(
+        carbon, manganese, chromium, molybdenum, vanadium, nickel, copper
+    )
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("CEQ Kalkulator") },
+                actions = {
+                    IconButton(onClick = onNavigateToHistory) {
+                        Icon(Icons.Default.History, contentDescription = "Historikk")
+                    }
+                    IconButton(onClick = onThemeChange) {
+                        Text(if (darkTheme) "🌙" else "☀️")
+                    }
+                }
+            )
+        },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = {
+                    onSave(carbon, manganese, chromium, molybdenum, vanadium, nickel, copper, ceResult)
+                },
+                icon = { Text("💾") },
+                text = { Text(if(language == "no") "Lagre" else "Save") }
+            )
+        }
+    ) { padding ->
+        Box(modifier = Modifier.fillMaxSize().padding(padding)) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                // Resultat-panel
+                StandardKort(tittel = if(language == "no") "Resultat CE (IIW)" else "Result CE (IIW)") {
+                    Text(
+                        text = "CE: " + ceResult.toString().take(5),
+                        style = MaterialTheme.typography.displayMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Text(
+                        text = "Sveisbarhet: ${KEKalkulator.evaluateWeldability(ceResult)}",
+                        style = MaterialTheme.typography.bodyLarge
+                    )
+                }
+
+                // Input-seksjon (Kombinert formel og input)
+                Column(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = if(language == "no") "KJEMISK SAMMENSÉTNING (%)" else "CHEMICAL COMPOSITION (%)",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(bottom = 4.dp)
+                    )
+
+                    CeFormelInputPanel(
+                        carbon = carbon,
+                        manganese = manganese,
+                        chromium = chromium,
+                        molybdenum = molybdenum,
+                        vanadium = vanadium,
+                        nickel = nickel,
+                        copper = copper,
+                        aktivtElement = aktivtElement,
+                        onElementClick = { element ->
+                            aktivtElement = if (aktivtElement == element) null else element
+                        }
+                    )
+                }
+            }
+
+            // Ny VelgeContainer som et overlegg for rullehjulet
+            VelgeContainer(
+                visArk = aktivtElement != null,
+                fraToppen = false,
+                onLukkBehov = { aktivtElement = null }
+            ) {
+                aktivtElement?.let { element ->
+                    when (element) {
+                        "C" -> TallVelgerMotor(label = "Carbon", verdi = carbon, onVerdiChange = { carbon = it })
+                        "Mn" -> TallVelgerMotor(label = "Manganese", verdi = manganese, onVerdiChange = { manganese = it }, steg = 0.05)
+                        "Cr" -> TallVelgerMotor(label = "Chromium", verdi = chromium, onVerdiChange = { chromium = it })
+                        "Mo" -> TallVelgerMotor(label = "Molybdenum", verdi = molybdenum, onVerdiChange = { molybdenum = it })
+                        "V" -> TallVelgerMotor(label = "Vanadium", verdi = vanadium, onVerdiChange = { vanadium = it })
+                        "Ni" -> TallVelgerMotor(label = "Nickel", verdi = nickel, onVerdiChange = { nickel = it })
+                        "Cu" -> TallVelgerMotor(label = "Copper", verdi = copper, onVerdiChange = { copper = it })
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+fun HovedskjermRetroPreview() {
+    AppTheme(valgtTema = AppThemeType.RETRO) {
+        Hovedskjerm(
+            darkTheme = true,
+            onThemeChange = {},
+            language = "no",
+            onLanguageChange = {},
+            onNavigateToHistory = {},
+            onSave = { _, _, _, _, _, _, _, _ -> }
+        )
+    }
+}
+
+@Preview
+@Composable
+fun HovedskjermFinPreview() {
+    AppTheme(valgtTema = AppThemeType.FIN) {
+        Hovedskjerm(
+            darkTheme = true,
+            onThemeChange = {},
+            language = "no",
+            onLanguageChange = {},
+            onNavigateToHistory = {},
+            onSave = { _, _, _, _, _, _, _, _ -> }
+        )
+    }
+}

@@ -1,4 +1,4 @@
-package com.sveis.karbonekvivalent.presentation.karbonekvivalent
+package com.sveis.karbonekvivalent.uiKE
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,7 +11,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.sveis.karbonekvivalent.db.CeEntry
-import com.sveis.karbonekvivalent.presentation.ui.StandardKort
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

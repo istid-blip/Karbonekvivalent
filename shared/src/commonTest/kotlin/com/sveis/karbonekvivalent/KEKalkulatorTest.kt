@@ -1,10 +1,10 @@
-package com.sveis.karbonekvivalent.domain
+package com.sveis.karbonekvivalent
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class CarbonEquivalentCalculatorTest {
+class KEKalkulatorTest {
 
     @Test
     fun testCalculateCE() {
@@ -13,7 +13,7 @@ class CarbonEquivalentCalculatorTest {
         // CE = 0.2 + 0.1 + (0.35/5) + (0.45/15)
         // CE = 0.2 + 0.1 + 0.07 + 0.03 = 0.40
         
-        val result = CarbonEquivalentCalculator.calculateCE(
+        val result = KEKalkulator.calculateCE(
             carbon = 0.2,
             manganese = 0.6,
             chromium = 0.2,
@@ -29,30 +29,30 @@ class CarbonEquivalentCalculatorTest {
     @Test
     fun testEvaluateWeldabilityExcellent() {
         val ce = 0.35
-        assertEquals(Weldability.EXCELLENT, CarbonEquivalentCalculator.evaluateWeldability(ce))
+        assertEquals(Weldability.EXCELLENT, KEKalkulator.evaluateWeldability(ce))
     }
 
     @Test
     fun testEvaluateWeldabilityGoodBoundary() {
         val ce = 0.36
-        assertEquals(Weldability.GOOD, CarbonEquivalentCalculator.evaluateWeldability(ce))
+        assertEquals(Weldability.GOOD, KEKalkulator.evaluateWeldability(ce))
     }
 
     @Test
     fun testEvaluateWeldabilityGood() {
         val ce = 0.50
-        assertEquals(Weldability.GOOD, CarbonEquivalentCalculator.evaluateWeldability(ce))
+        assertEquals(Weldability.GOOD, KEKalkulator.evaluateWeldability(ce))
     }
 
     @Test
     fun testEvaluateWeldabilityGoodUpperBoundary() {
         val ce = 0.55
-        assertEquals(Weldability.GOOD, CarbonEquivalentCalculator.evaluateWeldability(ce))
+        assertEquals(Weldability.GOOD, KEKalkulator.evaluateWeldability(ce))
     }
 
     @Test
     fun testEvaluateWeldabilityPoor() {
         val ce = 0.56
-        assertEquals(Weldability.POOR, CarbonEquivalentCalculator.evaluateWeldability(ce))
+        assertEquals(Weldability.POOR, KEKalkulator.evaluateWeldability(ce))
     }
 }

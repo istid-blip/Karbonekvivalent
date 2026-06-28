@@ -25,10 +25,10 @@ class CeRepository(driver: SqlDriver) {
         vanadium: Double,
         nickel: Double,
         copper: Double,
-        ceResult: Double
+        ceResult: Double,
     ) {
         queries.insertEntry(
-            timestamp = kotlinx.datetime.Clock.System.now().toEpochMilliseconds(),
+            timestamp = 0L,
             carbon = carbon,
             manganese = manganese,
             chromium = chromium,
