@@ -51,7 +51,7 @@ fun InnstillingerSkjerm(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 10.dp, start = 16.dp, end = 16.dp)
+                .padding(horizontal = 16.dp)
                 .height(48.dp)
         ) {
             AutoResizedText(
@@ -79,7 +79,7 @@ fun InnstillingerSkjerm(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(horizontal = 16.dp)
-                .padding(top = 70.dp)
+                .padding(top = 60.dp)
                 .verticalScroll(rememberScrollState())
                 .padding(bottom = 80.dp)
         ) {

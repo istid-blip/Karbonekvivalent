@@ -9,16 +9,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.sveis.karbonekvivalent.KEKalkulator
-import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.tooling.preview.Preview
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HovedSkjerm(
-    darkTheme: Boolean,
-    onThemeChange: () -> Unit,
     language: String,
     onLanguageChange: (String) -> Unit,
     onNavigateToHistory: () -> Unit,
@@ -42,19 +38,11 @@ fun HovedSkjerm(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("CEQ Kalkulator") },
-                actions = {
-                    IconButton(onClick = onNavigateToHistory) {
-                        Icon(Icons.Default.History, contentDescription = "Historikk")
-                    }
-                    IconButton(onClick = onNavigateToSettings) {
-                        Icon(Icons.Default.Settings, contentDescription = "Innstillinger")
-                    }
-                    IconButton(onClick = onThemeChange) {
-                        Text(if (darkTheme) "🌙" else "☀️")
-                    }
-                }
+            HovedSkjermHeader(
+                onApneInnstillinger = onNavigateToSettings,
+                onApneHistorikk = onNavigateToHistory,
+                language = language,
+                dimmet = aktivtElement != null
             )
         },
         floatingActionButton = {
@@ -144,8 +132,6 @@ fun HovedSkjerm(
 fun HovedSkjermRetroPreview() {
     AppTheme(valgtTema = AppThemeType.RETRO) {
         HovedSkjerm(
-            darkTheme = true,
-            onThemeChange = {},
             language = "no",
             onLanguageChange = {},
             onNavigateToHistory = {},
@@ -160,8 +146,6 @@ fun HovedSkjermRetroPreview() {
 fun HovedSkjermFinPreview() {
     AppTheme(valgtTema = AppThemeType.FIN) {
         HovedSkjerm(
-            darkTheme = true,
-            onThemeChange = {},
             language = "no",
             onLanguageChange = {},
             onNavigateToHistory = {},

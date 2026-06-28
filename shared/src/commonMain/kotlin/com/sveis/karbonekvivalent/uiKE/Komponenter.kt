@@ -8,7 +8,10 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.History
 import androidx.compose.material3.*
+import com.sveis.karbonekvivalent.KalkuleringsMetode
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -438,6 +441,64 @@ fun <T> AppSwitcher(
                     fontSize = 14.sp
                 )
             }
+        }
+    }
+}
+
+@Composable
+fun HovedSkjermHeader(
+    onApneInnstillinger: () -> Unit,
+    onApneHistorikk: () -> Unit,
+    language: String,
+    dimmet: Boolean = false,
+    kalkuleringsMetode: KalkuleringsMetode = KalkuleringsMetode.IIW
+) {
+    val alpha by animateFloatAsState(if (dimmet) 0.4f else 1.0f, label = "headerAlpha")
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .statusBarsPadding()
+            .height(48.dp)
+            .graphicsLayer { this.alpha = alpha }
+    ) {
+        IconButton(
+            onClick = onApneInnstillinger,
+            modifier = Modifier.align(Alignment.CenterStart),
+            enabled = !dimmet
+        ) {
+            Icon(
+                imageVector = Icons.Default.Settings,
+                contentDescription = if (language == "no") "Innstillinger" else "Settings",
+                tint = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.size(32.dp)
+            )
+        }
+
+        val tittel = when (kalkuleringsMetode) {
+            KalkuleringsMetode.IIW -> if (language == "no") "CE (IIW)" else "CE (IIW)"
+        }
+
+        AutoResizedText(
+            text = tittel.uppercase(),
+            style = MaterialTheme.typography.headlineLarge,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 60.dp)
+                .align(Alignment.Center),
+            color = MaterialTheme.colorScheme.onSurface
+        )
+
+        IconButton(
+            onClick = onApneHistorikk,
+            modifier = Modifier.align(Alignment.CenterEnd),
+            enabled = !dimmet
+        ) {
+            Icon(
+                imageVector = Icons.Default.History,
+                contentDescription = if (language == "no") "Historikk" else "History",
+                tint = MaterialTheme.colorScheme.onSurface,
+                modifier = Modifier.size(32.dp)
+            )
         }
     }
 }

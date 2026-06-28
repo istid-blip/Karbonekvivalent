@@ -26,7 +26,8 @@ fun HistorikkSkjerm(
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Tilbake")
                     }
-                }
+                },
+                modifier = Modifier.statusBarsPadding()
             )
         }
     ) { padding ->

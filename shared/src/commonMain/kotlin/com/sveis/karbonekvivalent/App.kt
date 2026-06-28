@@ -58,12 +58,6 @@ fun App(driverFactory: DatabaseDriverFactory) {
         when (currentScreen) {
             Screen.Home -> {
                 HovedSkjerm(
-                    darkTheme = darkTheme == "FIN",
-                    onThemeChange = { 
-                        scope.launch { 
-                            repository.updateTheme(if (darkTheme == "FIN") "RETRO" else "FIN") 
-                        } 
-                    },
                     language = language,
                     onLanguageChange = { newLang -> 
                         scope.launch { repository.updateLanguage(newLang) } 

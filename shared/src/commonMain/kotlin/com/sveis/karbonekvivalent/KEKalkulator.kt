@@ -10,6 +10,13 @@ enum class Weldability {
 }
 
 /**
+ * Definerer tilgjengelige kalkuleringsmetoder for karbonekvivalent.
+ */
+enum class KalkuleringsMetode {
+    IIW
+}
+
+/**
  * Kalkulator for beregning av karbonekvivalent (CE) ved bruk av standard IIW-formel.
  *
  * IIW (International Institute of Welding) formelen er:
