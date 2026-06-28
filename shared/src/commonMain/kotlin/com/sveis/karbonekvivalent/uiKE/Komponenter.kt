@@ -45,6 +45,27 @@ import androidx.compose.animation.core.LinearEasing
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
+import androidx.compose.ui.input.pointer.pointerInput
+
+@Composable
+fun Modifier.swipeToDismiss(
+    onDismiss: () -> Unit,
+    minSwipeDistance: Float = 150f,
+    swipeDirection: SwipeDirection
+): Modifier = this.pointerInput(Unit) {
+    detectHorizontalDragGestures { change, dragAmount ->
+        change.consume()
+        when (swipeDirection) {
+            SwipeDirection.LEFT -> if (dragAmount < -minSwipeDistance) onDismiss()
+            SwipeDirection.RIGHT -> if (dragAmount > minSwipeDistance) onDismiss()
+        }
+    }
+}
+
+enum class SwipeDirection {
+    LEFT, RIGHT
+}
 
 @Composable
 fun StandardKort(

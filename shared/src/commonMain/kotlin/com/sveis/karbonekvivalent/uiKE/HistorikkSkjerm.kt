@@ -19,6 +19,10 @@ fun HistorikkSkjerm(
     onBack: () -> Unit
 ) {
     Scaffold(
+        modifier = Modifier.swipeToDismiss(
+            onDismiss = onBack,
+            swipeDirection = SwipeDirection.RIGHT
+        ),
         topBar = {
             TopAppBar(
                 title = { Text("Historikk") },

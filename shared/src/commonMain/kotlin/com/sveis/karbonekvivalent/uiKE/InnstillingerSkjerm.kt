@@ -46,6 +46,10 @@ fun InnstillingerSkjerm(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .then(if (useEdgeToEdge) Modifier.statusBarsPadding() else Modifier)
+            .swipeToDismiss(
+                onDismiss = onLukk,
+                swipeDirection = SwipeDirection.LEFT
+            )
     ) {
         // --- Header ---
         Box(
