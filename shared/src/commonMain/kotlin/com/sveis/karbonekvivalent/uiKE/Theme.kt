@@ -132,6 +132,7 @@ fun getFinTypography(): Typography {
     val geistSans = geistSansFontFamily()
     return Typography(
         headlineLarge = TextStyle(fontFamily = geistSans, fontWeight = FontWeight.ExtraBold, fontSize = 32.sp),
+        headlineSmall = TextStyle(fontFamily = geistSans, fontWeight = FontWeight.ExtraBold, fontSize = 24.sp),
         titleMedium = TextStyle(fontFamily = geistSans, fontWeight = FontWeight.Bold, fontSize = 16.sp),
         labelSmall = TextStyle(fontFamily = geistSans, fontWeight = FontWeight.Bold, fontSize = 11.sp)
     )

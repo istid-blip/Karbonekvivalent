@@ -477,7 +477,7 @@ fun AppHeader(
     onHoyreKlikk: (() -> Unit)? = null,
     dimmet: Boolean = false,
     tittelAlignment: Alignment = Alignment.Center,
-    overrideFontSize: TextUnit? = null,
+    tittelStil: TextStyle? = null,
     modifier: Modifier = Modifier
 ) {
     val alpha by animateFloatAsState(if (dimmet) 0.4f else 1.0f, label = "headerAlpha")
@@ -504,11 +504,7 @@ fun AppHeader(
             }
         }
 
-        val textStyle = if (overrideFontSize != null) {
-            MaterialTheme.typography.headlineLarge.copy(fontSize = overrideFontSize)
-        } else {
-            MaterialTheme.typography.headlineLarge
-        }
+        val textStyle = tittelStil ?: MaterialTheme.typography.headlineLarge
 
         AutoResizedText(
             text = tittel.uppercase(),
@@ -520,7 +516,10 @@ fun AppHeader(
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 60.dp)
+                .padding(
+                    start = if (tittelAlignment == Alignment.Center || venstreIkon != null) 56.dp else 16.dp,
+                    end = if (tittelAlignment == Alignment.Center || hoyreIkon != null) 56.dp else 16.dp
+                )
                 .align(tittelAlignment),
             color = MaterialTheme.colorScheme.onSurface
         )

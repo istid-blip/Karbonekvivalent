@@ -25,14 +25,13 @@ fun HistorikkSkjerm(
             swipeDirection = SwipeDirection.RIGHT
         ),
         topBar = {
-            val isRetro = HeatInputTheme.current == AppThemeType.RETRO
             AppHeader(
                 tittel = "Historikk",
                 venstreIkon = Icons.AutoMirrored.Filled.ArrowBack,
                 venstreIkonBeskrivelse = "Tilbake",
                 onVenstreKlikk = onBack,
                 tittelAlignment = Alignment.CenterEnd,
-                overrideFontSize = if (isRetro) 20.sp else 24.sp
+                tittelStil = MaterialTheme.typography.headlineSmall
             )
         }
     ) { padding ->

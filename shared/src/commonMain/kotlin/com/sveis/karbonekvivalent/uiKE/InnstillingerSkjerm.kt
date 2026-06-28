@@ -58,7 +58,7 @@ fun InnstillingerSkjerm(
             hoyreIkonBeskrivelse = "Tilbake",
             onHoyreKlikk = onLukk,
             tittelAlignment = Alignment.CenterStart,
-            overrideFontSize = if (isRetro) 20.sp else 24.sp
+            tittelStil = MaterialTheme.typography.headlineSmall
         )
 
         Column(
