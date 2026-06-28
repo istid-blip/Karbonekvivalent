@@ -534,15 +534,10 @@ fun HovedSkjermHeader(
     onApneInnstillinger: () -> Unit,
     onApneHistorikk: () -> Unit,
     language: String,
-    dimmet: Boolean = false,
-    kalkuleringsMetode: KalkuleringsMetode = KalkuleringsMetode.IIW
+    dimmet: Boolean = false
 ) {
-    val tittel = when (kalkuleringsMetode) {
-        KalkuleringsMetode.IIW -> "CE (IIW)"
-    }
-    
     AppHeader(
-        tittel = tittel,
+        tittel = "KARBONEKVIVALENT",
         venstreIkon = Icons.Default.Settings,
         venstreIkonBeskrivelse = if (language == "no") "Innstillinger" else "Settings",
         onVenstreKlikk = onApneInnstillinger,
