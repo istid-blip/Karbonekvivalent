@@ -52,32 +52,12 @@ fun InnstillingerSkjerm(
             )
     ) {
         // --- Header ---
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .height(48.dp)
-        ) {
-            AutoResizedText(
-                text = "INNSTILLINGER",
-                style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.ExtraBold),
-                color = MaterialTheme.colorScheme.onSurface,
-                textAlign = TextAlign.Left,
-                modifier = Modifier.align(Alignment.CenterStart)
-            )
-
-            IconButton(
-                onClick = onLukk,
-                modifier = Modifier.align(Alignment.CenterEnd)
-            ) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                    contentDescription = "Tilbake",
-                    tint = MaterialTheme.colorScheme.onSurface,
-                    modifier = Modifier.size(32.dp)
-                )
-            }
-        }
+        AppHeader(
+            tittel = "INNSTILLINGER",
+            hoyreIkon = Icons.AutoMirrored.Filled.ArrowForward,
+            hoyreIkonBeskrivelse = "Tilbake",
+            onHoyreKlikk = onLukk
+        )
 
         Column(
             modifier = Modifier

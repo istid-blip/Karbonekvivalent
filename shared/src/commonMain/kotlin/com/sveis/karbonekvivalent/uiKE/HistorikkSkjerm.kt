@@ -24,14 +24,11 @@ fun HistorikkSkjerm(
             swipeDirection = SwipeDirection.RIGHT
         ),
         topBar = {
-            TopAppBar(
-                title = { Text("Historikk") },
-                navigationIcon = {
-                    IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Tilbake")
-                    }
-                },
-                modifier = Modifier.statusBarsPadding()
+            AppHeader(
+                tittel = "Historikk",
+                venstreIkon = Icons.AutoMirrored.Filled.ArrowBack,
+                venstreIkonBeskrivelse = "Tilbake",
+                onVenstreKlikk = onBack
             )
         }
     ) { padding ->

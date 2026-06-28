@@ -467,36 +467,39 @@ fun <T> AppSwitcher(
 }
 
 @Composable
-fun HovedSkjermHeader(
-    onApneInnstillinger: () -> Unit,
-    onApneHistorikk: () -> Unit,
-    language: String,
+fun AppHeader(
+    tittel: String,
+    venstreIkon: ImageVector? = null,
+    venstreIkonBeskrivelse: String? = null,
+    onVenstreKlikk: (() -> Unit)? = null,
+    hoyreIkon: ImageVector? = null,
+    hoyreIkonBeskrivelse: String? = null,
+    onHoyreKlikk: (() -> Unit)? = null,
     dimmet: Boolean = false,
-    kalkuleringsMetode: KalkuleringsMetode = KalkuleringsMetode.IIW
+    modifier: Modifier = Modifier
 ) {
     val alpha by animateFloatAsState(if (dimmet) 0.4f else 1.0f, label = "headerAlpha")
     Box(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .statusBarsPadding()
+            .padding(top = 8.dp)
             .height(48.dp)
             .graphicsLayer { this.alpha = alpha }
     ) {
-        IconButton(
-            onClick = onApneInnstillinger,
-            modifier = Modifier.align(Alignment.CenterStart),
-            enabled = !dimmet
-        ) {
-            Icon(
-                imageVector = Icons.Default.Settings,
-                contentDescription = if (language == "no") "Innstillinger" else "Settings",
-                tint = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.size(32.dp)
-            )
-        }
-
-        val tittel = when (kalkuleringsMetode) {
-            KalkuleringsMetode.IIW -> if (language == "no") "CE (IIW)" else "CE (IIW)"
+        if (venstreIkon != null && onVenstreKlikk != null) {
+            IconButton(
+                onClick = onVenstreKlikk,
+                modifier = Modifier.align(Alignment.CenterStart),
+                enabled = !dimmet
+            ) {
+                Icon(
+                    imageVector = venstreIkon,
+                    contentDescription = venstreIkonBeskrivelse,
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.size(32.dp)
+                )
+            }
         }
 
         AutoResizedText(
@@ -509,17 +512,43 @@ fun HovedSkjermHeader(
             color = MaterialTheme.colorScheme.onSurface
         )
 
-        IconButton(
-            onClick = onApneHistorikk,
-            modifier = Modifier.align(Alignment.CenterEnd),
-            enabled = !dimmet
-        ) {
-            Icon(
-                imageVector = Icons.Default.History,
-                contentDescription = if (language == "no") "Historikk" else "History",
-                tint = MaterialTheme.colorScheme.onSurface,
-                modifier = Modifier.size(32.dp)
-            )
+        if (hoyreIkon != null && onHoyreKlikk != null) {
+            IconButton(
+                onClick = onHoyreKlikk,
+                modifier = Modifier.align(Alignment.CenterEnd),
+                enabled = !dimmet
+            ) {
+                Icon(
+                    imageVector = hoyreIkon,
+                    contentDescription = hoyreIkonBeskrivelse,
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.size(32.dp)
+                )
+            }
         }
     }
+}
+
+@Composable
+fun HovedSkjermHeader(
+    onApneInnstillinger: () -> Unit,
+    onApneHistorikk: () -> Unit,
+    language: String,
+    dimmet: Boolean = false,
+    kalkuleringsMetode: KalkuleringsMetode = KalkuleringsMetode.IIW
+) {
+    val tittel = when (kalkuleringsMetode) {
+        KalkuleringsMetode.IIW -> "CE (IIW)"
+    }
+    
+    AppHeader(
+        tittel = tittel,
+        venstreIkon = Icons.Default.Settings,
+        venstreIkonBeskrivelse = if (language == "no") "Innstillinger" else "Settings",
+        onVenstreKlikk = onApneInnstillinger,
+        hoyreIkon = Icons.Default.History,
+        hoyreIkonBeskrivelse = if (language == "no") "Historikk" else "History",
+        onHoyreKlikk = onApneHistorikk,
+        dimmet = dimmet
+    )
 }
