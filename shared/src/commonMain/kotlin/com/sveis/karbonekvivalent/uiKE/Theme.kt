@@ -28,15 +28,31 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import karbonekvivalent.shared.generated.resources.Res
+import karbonekvivalent.shared.generated.resources.geist_mono_thin
+import karbonekvivalent.shared.generated.resources.geist_mono_regular
+import karbonekvivalent.shared.generated.resources.geist_mono_medium
+import karbonekvivalent.shared.generated.resources.geist_mono_bold
+import karbonekvivalent.shared.generated.resources.geist_medium
+import org.jetbrains.compose.resources.Font
 
 enum class AppThemeType {
     FIN,
     RETRO
 }
 
-// Placeholder for geistMonoFontFamily - you might need to implement this properly
 @Composable
-fun geistMonoFontFamily() = FontFamily.Monospace
+fun geistMonoFontFamily() = FontFamily(
+    Font(Res.font.geist_mono_thin, FontWeight.Thin),
+    Font(Res.font.geist_mono_regular, FontWeight.Normal),
+    Font(Res.font.geist_mono_medium, FontWeight.Medium),
+    Font(Res.font.geist_mono_bold, FontWeight.Bold)
+)
+
+@Composable
+fun geistSansFontFamily() = FontFamily(
+    Font(Res.font.geist_medium, FontWeight.Medium)
+)
 
 val LocalUseEdgeToEdge = staticCompositionLocalOf { true }
 
@@ -111,11 +127,15 @@ private val RetroFarger = darkColorScheme(
     outlineVariant = Color(0xFF004400)
 )
 
-private val CompactTypography = Typography(
-    headlineLarge = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.ExtraBold, fontSize = 32.sp),
-    titleMedium = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Bold, fontSize = 16.sp),
-    labelSmall = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Bold, fontSize = 11.sp)
-)
+@Composable
+fun getFinTypography(): Typography {
+    val geistSans = geistSansFontFamily()
+    return Typography(
+        headlineLarge = TextStyle(fontFamily = geistSans, fontWeight = FontWeight.ExtraBold, fontSize = 32.sp),
+        titleMedium = TextStyle(fontFamily = geistSans, fontWeight = FontWeight.Bold, fontSize = 16.sp),
+        labelSmall = TextStyle(fontFamily = geistSans, fontWeight = FontWeight.Bold, fontSize = 11.sp)
+    )
+}
 
 // Bruker den eksisterende geistMonoFontFamily() definisjonen
 @Composable
@@ -171,7 +191,7 @@ fun AppTheme(
     val tema = if (darkTheme) valgtTema else AppThemeType.FIN
     val colorScheme = if (tema == AppThemeType.FIN) FinFarger else RetroFarger
     val shapes = if (tema == AppThemeType.FIN) FinShapes else RetroShapes
-    val typography = if (tema == AppThemeType.FIN) CompactTypography else getRetroTypography()
+    val typography = if (tema == AppThemeType.FIN) getFinTypography() else getRetroTypography()
     val tallVelgerStyle = if (tema == AppThemeType.FIN) FinTallVelgerStyle else RetroTallVelgerStyle
 
     CompositionLocalProvider(
