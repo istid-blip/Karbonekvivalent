@@ -1,7 +1,9 @@
 package com.sveis.karbonekvivalent.uiKE
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -9,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.sveis.karbonekvivalent.KEKalkulator
+import com.sveis.karbonekvivalent.util.KeepScreenOn
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,6 +24,9 @@ fun HovedSkjerm(
     onNavigateToSettings: () -> Unit,
     onSave: (Double, Double, Double, Double, Double, Double, Double, Double) -> Unit
 ) {
+    // Sørger for at skjermen ikke slår seg av mens vi er på hovedskjermen
+    KeepScreenOn()
+
     // State for alle kjemiske elementer
     var carbon by remember { mutableStateOf(0.15) }
     var manganese by remember { mutableStateOf(1.20) }
@@ -89,19 +95,26 @@ fun HovedSkjerm(
                         modifier = Modifier.padding(bottom = 4.dp)
                     )
 
-                    CeFormelInputPanel(
-                        carbon = carbon,
-                        manganese = manganese,
-                        chromium = chromium,
-                        molybdenum = molybdenum,
-                        vanadium = vanadium,
-                        nickel = nickel,
-                        copper = copper,
-                        aktivtElement = aktivtElement,
-                        onElementClick = { element ->
-                            aktivtElement = if (aktivtElement == element) null else element
-                        }
-                    )
+                    Surface(
+                        modifier = Modifier.fillMaxWidth().height(185.dp),
+                        shape = RoundedCornerShape(16.dp),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.3f)
+                    ) {
+                        CeFormelInputPanel(
+                            carbon = carbon,
+                            manganese = manganese,
+                            chromium = chromium,
+                            molybdenum = molybdenum,
+                            vanadium = vanadium,
+                            nickel = nickel,
+                            copper = copper,
+                            aktivtElement = aktivtElement,
+                            onElementClick = { element ->
+                                aktivtElement = if (aktivtElement == element) null else element
+                            }
+                        )
+                    }
                 }
             }
 

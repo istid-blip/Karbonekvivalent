@@ -5,11 +5,13 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -173,14 +175,55 @@ private fun BrukSoyle(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
+        modifier = Modifier.width(IntrinsicSize.Min)
     ) {
         teller()
         HorizontalDivider(
-            modifier = Modifier.width(intrinsicSize = IntrinsicSize.Max).padding(vertical = 4.dp),
+            modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
             thickness = 2.dp,
-            color = MaterialTheme.colorScheme.onSurface
+            color = MaterialTheme.colorScheme.primary
         )
         Text(text = nevner, style = nevnerStyle)
+    }
+}
+
+@Preview
+@Composable
+fun CeFormelInputPanelFinPreview() {
+    AppTheme(valgtTema = AppThemeType.FIN) {
+        Surface(color = MaterialTheme.colorScheme.background) {
+            CeFormelInputPanel(
+                carbon = 0.15,
+                manganese = 1.2,
+                chromium = 0.5,
+                molybdenum = 0.2,
+                vanadium = 0.05,
+                nickel = 0.3,
+                copper = 0.2,
+                aktivtElement = "C",
+                onElementClick = {}
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun CeFormelInputPanelRetroPreview() {
+    AppTheme(valgtTema = AppThemeType.RETRO) {
+        Surface(color = MaterialTheme.colorScheme.background) {
+            CeFormelInputPanel(
+                carbon = 0.15,
+                manganese = 1.2,
+                chromium = 0.5,
+                molybdenum = 0.2,
+                vanadium = 0.05,
+                nickel = 0.3,
+                copper = 0.2,
+                aktivtElement = "C",
+                onElementClick = {}
+            )
+        }
     }
 }
