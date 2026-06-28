@@ -2,7 +2,7 @@ package com.sveis.karbonekvivalent
 
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import com.sveis.karbonekvivalent.uiKE.Hovedskjerm
+import com.sveis.karbonekvivalent.uiKE.HovedSkjerm
 import com.sveis.karbonekvivalent.uiKE.HistorikkSkjerm
 import com.sveis.karbonekvivalent.uiKE.InnstillingerSkjerm
 import com.sveis.karbonekvivalent.uiKE.AppTheme
@@ -57,7 +57,7 @@ fun App(driverFactory: DatabaseDriverFactory) {
     AppTheme(valgtTema = currentTheme) {
         when (currentScreen) {
             Screen.Home -> {
-                Hovedskjerm(
+                HovedSkjerm(
                     darkTheme = darkTheme == "FIN",
                     onThemeChange = { 
                         scope.launch { 

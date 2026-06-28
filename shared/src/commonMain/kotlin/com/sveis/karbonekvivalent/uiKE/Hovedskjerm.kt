@@ -16,7 +16,7 @@ import androidx.compose.ui.tooling.preview.Preview
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Hovedskjerm(
+fun HovedSkjerm(
     darkTheme: Boolean,
     onThemeChange: () -> Unit,
     language: String,
@@ -141,9 +141,9 @@ fun Hovedskjerm(
 
 @Preview
 @Composable
-fun HovedskjermRetroPreview() {
+fun HovedSkjermRetroPreview() {
     AppTheme(valgtTema = AppThemeType.RETRO) {
-        Hovedskjerm(
+        HovedSkjerm(
             darkTheme = true,
             onThemeChange = {},
             language = "no",
@@ -157,9 +157,9 @@ fun HovedskjermRetroPreview() {
 
 @Preview
 @Composable
-fun HovedskjermFinPreview() {
+fun HovedSkjermFinPreview() {
     AppTheme(valgtTema = AppThemeType.FIN) {
-        Hovedskjerm(
+        HovedSkjerm(
             darkTheme = true,
             onThemeChange = {},
             language = "no",
