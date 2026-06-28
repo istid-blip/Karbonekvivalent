@@ -7,7 +7,6 @@ import com.sveis.karbonekvivalent.uiKE.HistorikkSkjerm
 import com.sveis.karbonekvivalent.uiKE.Innstillinger
 import com.sveis.karbonekvivalent.uiKE.AppTheme
 import com.sveis.karbonekvivalent.uiKE.AppThemeType
-import com.sveis.karbonekvivalent.uiKE.LengdeEnhet
 import com.sveis.karbonekvivalent.data.CeRepository
 import com.sveis.karbonekvivalent.data.DatabaseDriverFactory
 import com.sveis.karbonekvivalent.db.CeEntry
@@ -33,24 +32,42 @@ enum class Screen {
  */
 @Composable
 fun App(driverFactory: DatabaseDriverFactory) {
-    var darkTheme by rememberSaveable { mutableStateOf(true) }
-    var language by rememberSaveable { mutableStateOf("no") }
+    val scope = rememberCoroutineScope()
+    val repository = remember { CeRepository(driverFactory.createDriver()) }
+
+    // Initialiserer innstillinger ved oppstart
+    LaunchedEffect(Unit) {
+        repository.initializeSettings()
+    }
+
+    // Observerer innstillinger fra databasen
+    val settings by repository.getSettings().collectAsState(initial = null)
+    
+    // Fallback verdier mens vi venter på databasen
+    val darkTheme = settings?.theme ?: "FIN"
+    val language = settings?.language ?: "no"
+    
+    val currentTheme = if (darkTheme == "FIN") AppThemeType.FIN else AppThemeType.RETRO
+    
     var currentScreen by remember { mutableStateOf(Screen.Home) }
 
-    val scope = rememberCoroutineScope()
-    // Initialiserer repository for datatilgang
-    val repository = remember { CeRepository(driverFactory.createDriver()) }
     // Henter alle lagrede bidrag som en strøm (Flow) og konverterer til Compose State
     val historyEntries by repository.getAllEntries().collectAsState(initial = emptyList())
 
-    AppTheme(valgtTema = if (darkTheme) AppThemeType.FIN else AppThemeType.RETRO) {
+    AppTheme(valgtTema = currentTheme) {
         when (currentScreen) {
             Screen.Home -> {
                 Hovedskjerm(
-                    darkTheme = darkTheme,
-                    onThemeChange = { darkTheme = !darkTheme },
+                    darkTheme = darkTheme == "FIN",
+                    onThemeChange = { 
+                        scope.launch { 
+                            repository.updateTheme(if (darkTheme == "FIN") "RETRO" else "FIN") 
+                        } 
+                    },
                     language = language,
-                    onLanguageChange = { language = it },
+                    onLanguageChange = { newLang -> 
+                        scope.launch { repository.updateLanguage(newLang) } 
+                    },
                     onNavigateToHistory = { currentScreen = Screen.History },
                     onNavigateToSettings = { currentScreen = Screen.Settings },
                     onSave = { c, mn, cr, mo, v, ni, cu, res ->
@@ -68,13 +85,15 @@ fun App(driverFactory: DatabaseDriverFactory) {
             }
             Screen.Settings -> {
                 Innstillinger(
-                    database = null, // TODO: Send database
-                    valgtTema = if (darkTheme) AppThemeType.FIN else AppThemeType.RETRO,
-                    onTemaValgt = { darkTheme = (it == AppThemeType.FIN) },
-                    valgtEnhet = LengdeEnhet.MM,
-                    onEnhetValgt = { },
+                    database = repository.database,
+                    valgtTema = currentTheme,
+                    onTemaValgt = { newTheme -> 
+                        scope.launch { repository.updateTheme(newTheme.name) } 
+                    },
                     valgtSprak = language,
-                    onSprakValgt = { language = it },
+                    onSprakValgt = { newLang -> 
+                        scope.launch { repository.updateLanguage(newLang) } 
+                    },
                     onLukk = { currentScreen = Screen.Home }
                 )
             }

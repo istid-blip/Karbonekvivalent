@@ -20,20 +20,21 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.sveis.karbonekvivalent.db.CeDatabase
 import com.sveis.karbonekvivalent.data.BackupManager
+import com.sveis.karbonekvivalent.util.shareBackupFile
+import com.sveis.karbonekvivalent.util.saveBackupFile
 
 @Composable
 fun Innstillinger(
     database: CeDatabase?,
     valgtTema: AppThemeType,
     onTemaValgt: (AppThemeType) -> Unit,
-    valgtEnhet: LengdeEnhet,
-    onEnhetValgt: (LengdeEnhet) -> Unit,
     valgtSprak: String,
     onSprakValgt: (String) -> Unit,
     onLukk: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var visDisclaimerArk by remember { mutableStateOf(false) }
+    var erEksportUtvidet by remember { mutableStateOf(false) }
 
     val primaryColor = MaterialTheme.colorScheme.primary
     val erNoeApen = visDisclaimerArk
@@ -87,11 +88,42 @@ fun Innstillinger(
 
             InnstillingValgKort(
                 tittel = "Eksporter historikk",
-                hovedtekst = "Lagre backup",
+                hovedtekst = "Lagre eller del backup",
                 undertekst = "Eksporter alle lagrede beregninger til JSON-fil",
                 infoTekst = "Dette lar deg ta vare på historikken din hvis du bytter telefon.",
-                onClick = {
-                    // Placeholder for eksport
+                erUtvidet = erEksportUtvidet,
+                onClick = { erEksportUtvidet = !erEksportUtvidet },
+                ekstraInnhold = {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Button(
+                            onClick = {
+                                database?.let { db ->
+                                    val json = BackupManager.exportDatabase(db)
+                                    saveBackupFile(json, "karbonekvivalent_backup.json")
+                                }
+                            },
+                            modifier = Modifier.weight(1f),
+                            shape = if (isRetro) RoundedCornerShape(0.dp) else ButtonDefaults.shape
+                        ) {
+                            Text(if (valgtSprak == "no") "Lagre på enhet" else "Save to device")
+                        }
+                        
+                        OutlinedButton(
+                            onClick = {
+                                database?.let { db ->
+                                    val json = BackupManager.exportDatabase(db)
+                                    shareBackupFile(json, "karbonekvivalent_backup.json")
+                                }
+                            },
+                            modifier = Modifier.weight(1f),
+                            shape = if (isRetro) RoundedCornerShape(0.dp) else ButtonDefaults.outlinedShape
+                        ) {
+                            Text(if (valgtSprak == "no") "Del med app" else "Share with app")
+                        }
+                    }
                 }
             )
 
@@ -101,7 +133,7 @@ fun Innstillinger(
                 undertekst = "Last inn beregninger fra en JSON-fil",
                 infoTekst = "Advarsel: Dette kan overskrive eksisterende data.",
                 onClick = {
-                    // Placeholder for import
+                    // Placeholder for import-velger
                 }
             )
 
@@ -126,18 +158,6 @@ fun Innstillinger(
                 selected = valgtTema,
                 options = AppThemeType.entries,
                 onSelected = onTemaValgt,
-                labelProvider = { it.name }
-            )
-
-            HorizontalDivider(modifier = Modifier.padding(vertical = 24.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
-
-            // --- Enhet-seksjon ---
-            SettingsSectionTitle(title = "ENHETER", isRetro = isRetro)
-
-            AppSwitcher(
-                selected = valgtEnhet,
-                options = LengdeEnhet.entries,
-                onSelected = onEnhetValgt,
                 labelProvider = { it.name }
             )
 

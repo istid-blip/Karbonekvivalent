@@ -24,6 +24,7 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -199,7 +200,9 @@ fun InnstillingValgKort(
     undertekst: String,
     infoTekst: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    erUtvidet: Boolean = false,
+    ekstraInnhold: (@Composable ColumnScope.() -> Unit)? = null
 ) {
     val isRetro = HeatInputTheme.current == AppThemeType.RETRO
     val outlineColor = MaterialTheme.colorScheme.outlineVariant
@@ -237,8 +240,26 @@ fun InnstillingValgKort(
                     hovedtekst = hovedtekst,
                     undertekst = undertekst,
                     onClick = onClick,
+                    erUtvidbar = ekstraInnhold != null,
+                    erUtvidet = erUtvidet,
                     modifier = Modifier.padding(horizontal = 12.dp, vertical = 14.dp)
                 )
+
+                // Ekstra innhold (utvidbart felt)
+                AnimatedVisibility(
+                    visible = erUtvidet && ekstraInnhold != null,
+                    enter = expandVertically() + fadeIn(),
+                    exit = shrinkVertically() + fadeOut()
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp)
+                    ) {
+                        ekstraInnhold?.invoke(this)
+                        Spacer(modifier = Modifier.height(12.dp))
+                    }
+                }
 
                 // Informasjonsfelt under knappen
                 Row(
@@ -284,7 +305,9 @@ fun InnstillingKlikkFelt(
     hovedtekst: String,
     undertekst: String,
     onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    erUtvidbar: Boolean = false,
+    erUtvidet: Boolean = false
 ) {
     val isRetro = HeatInputTheme.current == AppThemeType.RETRO
     val primaryColor = MaterialTheme.colorScheme.primary
@@ -294,6 +317,11 @@ fun InnstillingKlikkFelt(
     val alpha by animateFloatAsState(
         targetValue = if (isPressed) 1f else 0.7f,
         label = "klikkFeltAlpha"
+    )
+
+    val rotation by animateFloatAsState(
+        targetValue = if (erUtvidet) 180f else 0f,
+        label = "rotation"
     )
 
     Surface(
@@ -334,10 +362,12 @@ fun InnstillingKlikkFelt(
                 )
             }
             Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                imageVector = if (erUtvidbar) Icons.Default.ArrowDropDown else Icons.AutoMirrored.Filled.ArrowForward,
                 contentDescription = null,
                 tint = primaryColor.copy(alpha = 0.5f),
-                modifier = Modifier.size(20.dp)
+                modifier = Modifier
+                    .size(if (erUtvidbar) 28.dp else 20.dp)
+                    .graphicsLayer { rotationZ = rotation }
             )
         }
     }

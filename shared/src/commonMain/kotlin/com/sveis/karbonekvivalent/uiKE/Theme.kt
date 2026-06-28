@@ -34,15 +34,10 @@ enum class AppThemeType {
     RETRO
 }
 
-enum class LengdeEnhet {
-    MM, CM
-}
-
 // Placeholder for geistMonoFontFamily - you might need to implement this properly
 @Composable
 fun geistMonoFontFamily() = FontFamily.Monospace
 
-val LocalLengdeEnhet = staticCompositionLocalOf { LengdeEnhet.MM }
 val LocalUseEdgeToEdge = staticCompositionLocalOf { true }
 
 // Egne stiler for TallVelger-komponenten
@@ -168,7 +163,6 @@ fun CrtEffektOverlay(modifier: Modifier = Modifier) {
 @Composable
 fun AppTheme(
     valgtTema: AppThemeType = AppThemeType.RETRO,
-    valgtEnhet: LengdeEnhet = LengdeEnhet.MM,
     useEdgeToEdge: Boolean = true,
     darkTheme: Boolean = true, // Added to match App.kt usage
     modifier: Modifier = Modifier,
@@ -183,7 +177,6 @@ fun AppTheme(
     CompositionLocalProvider(
         LocalTallVelgerStyle provides tallVelgerStyle,
         LocalAppTheme provides tema,
-        LocalLengdeEnhet provides valgtEnhet,
         LocalUseEdgeToEdge provides useEdgeToEdge
     ) {
         MaterialTheme(colorScheme = colorScheme, shapes = shapes, typography = typography) {
