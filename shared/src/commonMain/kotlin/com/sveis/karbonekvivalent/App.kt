@@ -1,5 +1,7 @@
 package com.sveis.karbonekvivalent
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.sveis.karbonekvivalent.uiKE.HovedSkjerm
@@ -55,41 +57,68 @@ fun App(driverFactory: DatabaseDriverFactory) {
     val historyEntries by repository.getAllEntries().collectAsState(initial = emptyList())
 
     AppTheme(valgtTema = currentTheme) {
-        when (currentScreen) {
-            Screen.Home -> {
-                HovedSkjerm(
-                    language = language,
-                    onLanguageChange = { newLang -> 
-                        scope.launch { repository.updateLanguage(newLang) } 
-                    },
-                    onNavigateToHistory = { currentScreen = Screen.History },
-                    onNavigateToSettings = { currentScreen = Screen.Settings },
-                    onSave = { c, mn, cr, mo, v, ni, cu, res ->
-                        scope.launch {
-                            repository.insertEntry(c, mn, cr, mo, v, ni, cu, res)
+        AnimatedContent(
+            targetState = currentScreen,
+            transitionSpec = {
+                val targetIndex = when (targetState) {
+                    Screen.Settings -> 0
+                    Screen.Home -> 1
+                    Screen.History -> 2
+                }
+                val initialIndex = when (initialState) {
+                    Screen.Settings -> 0
+                    Screen.Home -> 1
+                    Screen.History -> 2
+                }
+
+                if (targetIndex > initialIndex) {
+                    // Navigerer "fremover" (mot høyre) -> Innhold kommer fra høyre, gammelt går ut til venstre
+                    slideInHorizontally(animationSpec = tween(300)) { it } togetherWith
+                            slideOutHorizontally(animationSpec = tween(300)) { -it }
+                } else {
+                    // Navigerer "bakover" (mot venstre) -> Innhold kommer fra venstre, gammelt går ut til høyre
+                    slideInHorizontally(animationSpec = tween(300)) { -it } togetherWith
+                            slideOutHorizontally(animationSpec = tween(300)) { it }
+                }
+            },
+            label = "skjermOvergang"
+        ) { screen ->
+            when (screen) {
+                Screen.Home -> {
+                    HovedSkjerm(
+                        language = language,
+                        onLanguageChange = { newLang ->
+                            scope.launch { repository.updateLanguage(newLang) }
+                        },
+                        onNavigateToHistory = { currentScreen = Screen.History },
+                        onNavigateToSettings = { currentScreen = Screen.Settings },
+                        onSave = { c, mn, cr, mo, v, ni, cu, res ->
+                            scope.launch {
+                                repository.insertEntry(c, mn, cr, mo, v, ni, cu, res)
+                            }
                         }
-                    }
-                )
-            }
-            Screen.History -> {
-                HistorikkSkjerm(
-                    entries = historyEntries,
-                    onBack = { currentScreen = Screen.Home }
-                )
-            }
-            Screen.Settings -> {
-                InnstillingerSkjerm(
-                    database = repository.database,
-                    valgtTema = currentTheme,
-                    onTemaValgt = { newTheme -> 
-                        scope.launch { repository.updateTheme(newTheme.name) } 
-                    },
-                    valgtSprak = language,
-                    onSprakValgt = { newLang -> 
-                        scope.launch { repository.updateLanguage(newLang) } 
-                    },
-                    onLukk = { currentScreen = Screen.Home }
-                )
+                    )
+                }
+                Screen.History -> {
+                    HistorikkSkjerm(
+                        entries = historyEntries,
+                        onBack = { currentScreen = Screen.Home }
+                    )
+                }
+                Screen.Settings -> {
+                    InnstillingerSkjerm(
+                        database = repository.database,
+                        valgtTema = currentTheme,
+                        onTemaValgt = { newTheme ->
+                            scope.launch { repository.updateTheme(newTheme.name) }
+                        },
+                        valgtSprak = language,
+                        onSprakValgt = { newLang ->
+                            scope.launch { repository.updateLanguage(newLang) }
+                        },
+                        onLukk = { currentScreen = Screen.Home }
+                    )
+                }
             }
         }
     }
