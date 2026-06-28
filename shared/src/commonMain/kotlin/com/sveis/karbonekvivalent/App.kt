@@ -4,7 +4,7 @@ import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import com.sveis.karbonekvivalent.uiKE.Hovedskjerm
 import com.sveis.karbonekvivalent.uiKE.HistorikkSkjerm
-import com.sveis.karbonekvivalent.uiKE.Innstillinger
+import com.sveis.karbonekvivalent.uiKE.InnstillingerSkjerm
 import com.sveis.karbonekvivalent.uiKE.AppTheme
 import com.sveis.karbonekvivalent.uiKE.AppThemeType
 import com.sveis.karbonekvivalent.data.CeRepository
@@ -84,7 +84,7 @@ fun App(driverFactory: DatabaseDriverFactory) {
                 )
             }
             Screen.Settings -> {
-                Innstillinger(
+                InnstillingerSkjerm(
                     database = repository.database,
                     valgtTema = currentTheme,
                     onTemaValgt = { newTheme -> 

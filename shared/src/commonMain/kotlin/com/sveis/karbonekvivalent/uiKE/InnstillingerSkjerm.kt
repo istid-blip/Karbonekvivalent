@@ -24,7 +24,7 @@ import com.sveis.karbonekvivalent.util.shareBackupFile
 import com.sveis.karbonekvivalent.util.saveBackupFile
 
 @Composable
-fun Innstillinger(
+fun InnstillingerSkjerm(
     database: CeDatabase?,
     valgtTema: AppThemeType,
     onTemaValgt: (AppThemeType) -> Unit,
