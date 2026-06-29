@@ -105,6 +105,7 @@ private val FinFarger = darkColorScheme(
     onSecondary = Color.White,
     background = Color.Black,
     surface = Color(0xFF1C1C1E),
+    surfaceVariant = Color(0xFF151516), // Ny farge for formelfelt og lignende
     onBackground = Color.White,
     onSurface = Color.White,
     outline = Color(0xFFFF3B30).copy(alpha = 0.5f),
@@ -120,7 +121,7 @@ private val RetroFarger = darkColorScheme(
     onSecondary = Color.Black,
     background = Color.Black,
     surface = Color.Black,
-    surfaceVariant = Color(0xFF003300),
+    surfaceVariant = Color(0xFF001A00), // Mørk grønnaktig for retro formelfelt
     onBackground = Color(0xFF33FF4D),
     onSurface = Color(0xFF33FF4D),
     outline = Color(0xFF33FF4D),

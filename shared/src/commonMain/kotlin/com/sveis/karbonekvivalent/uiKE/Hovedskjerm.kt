@@ -12,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -141,6 +142,7 @@ fun HovedSkjerm(
                             resultatUndertekst = KEKalkulator.evaluateWeldability(ceResult).toLocalizedText(),
                             onToggleDropdown = { dropdownExpanded = !dropdownExpanded },
                             onDismissDropdown = { dropdownExpanded = false },
+                            containerColor = MaterialTheme.colorScheme.background,
                             dropdownInnhold = {
                                 defaultSteelAlloys.forEach { alloy ->
                                     DropdownMenuItem(
@@ -198,11 +200,13 @@ fun HovedSkjerm(
                                 modifier = Modifier.padding(bottom = 4.dp)
                             )
 
+                            val formulaPanelBg = MaterialTheme.colorScheme.surfaceVariant
+                            
                             Surface(
                                 modifier = Modifier.fillMaxWidth().height(185.dp),
                                 shape = RoundedCornerShape(16.dp),
                                 border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-                                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.3f)
+                                color = formulaPanelBg
                             ) {
                                 CeFormelInputPanel(
                                     carbon = carbon,
@@ -216,6 +220,7 @@ fun HovedSkjerm(
                                     onElementClick = { element ->
                                         aktivtElement = if (aktivtElement == element) null else element
                                     },
+                                    inputBakgrunn = formulaPanelBg,
                                     scrollState = formulaScrollState,
                                 )
                             }

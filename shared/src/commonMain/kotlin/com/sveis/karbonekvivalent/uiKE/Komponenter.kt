@@ -150,6 +150,7 @@ fun AnimerbartInputFelt(
     erNoeAktivt: Boolean,
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
+    containerColor: Color = MaterialTheme.colorScheme.surface
 ) {
     val alpha by animateFloatAsState(
         targetValue = if (erNoeAktivt && !erAktiv) 0.4f else 1.0f,
@@ -193,13 +194,13 @@ fun AnimerbartInputFelt(
         }
 
         AutoResizedText(
-            text = label.uppercase(),
+            text = label,
             style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp, fontWeight = FontWeight.Bold),
             color = if (erAktiv) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .offset(x = 8.dp, y = (-8).dp)
-                .background(MaterialTheme.colorScheme.surface)
+                .background(containerColor)
                 .padding(horizontal = 4.dp),
             textAlign = TextAlign.Start
         )
@@ -212,7 +213,7 @@ fun AnimerbartInputFelt(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .offset(x = (-8).dp, y = 8.dp)
-                .background(MaterialTheme.colorScheme.surface)
+                .background(containerColor)
                 .padding(horizontal = 4.dp)
         )
     }
@@ -477,6 +478,7 @@ fun CustomDropdownFelt(
     onClick: () -> Unit,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier,
+    containerColor: Color = MaterialTheme.colorScheme.surface,
     dropdownInnhold: @Composable ColumnScope.() -> Unit
 ) {
     var feltBredde by remember { mutableStateOf(0.dp) }
@@ -543,7 +545,7 @@ fun CustomDropdownFelt(
             modifier = Modifier
                 .align(Alignment.TopStart)
                 .offset(x = 12.dp, y = (-8).dp)
-                .background(MaterialTheme.colorScheme.surface)
+                .background(containerColor)
                 .padding(horizontal = 4.dp)
         )
 
@@ -556,7 +558,7 @@ fun CustomDropdownFelt(
                 modifier = Modifier
                     .align(Alignment.BottomEnd)
                     .offset(x = (-12).dp, y = 8.dp)
-                    .background(MaterialTheme.colorScheme.surface)
+                    .background(containerColor)
                     .padding(horizontal = 4.dp)
             )
         }
@@ -623,6 +625,7 @@ fun SelectorAndResultSection(
     onToggleDropdown: () -> Unit,
     onDismissDropdown: () -> Unit,
     modifier: Modifier = Modifier,
+    containerColor: Color = MaterialTheme.colorScheme.surface,
     dropdownInnhold: @Composable ColumnScope.() -> Unit
 ) {
     Row(
@@ -638,6 +641,7 @@ fun SelectorAndResultSection(
             onClick = onToggleDropdown,
             onDismiss = onDismissDropdown,
             modifier = Modifier.width(175.dp),
+            containerColor = containerColor,
             dropdownInnhold = dropdownInnhold
         )
 

@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -28,6 +29,7 @@ fun CeFormelInputPanel(
     aktivtElement: String?,
     onElementClick: (String) -> Unit,
     modifier: Modifier = Modifier,
+    inputBakgrunn: Color = MaterialTheme.colorScheme.surface,
     scrollState: ScrollState = rememberScrollState(),
 ) {
     val erNoeAktivt = aktivtElement != null
@@ -59,6 +61,7 @@ fun CeFormelInputPanel(
             erAktiv = aktivtElement == "C",
             erNoeAktivt = erNoeAktivt,
             onClick = { onElementClick("C") },
+            containerColor = inputBakgrunn,
             modifier = Modifier.width(70.dp)
         )
 
@@ -75,6 +78,7 @@ fun CeFormelInputPanel(
                     erAktiv = aktivtElement == "Mn",
                     erNoeAktivt = erNoeAktivt,
                     onClick = { onElementClick("Mn") },
+                    containerColor = inputBakgrunn,
                     modifier = Modifier.width(70.dp)
                 )
             },
@@ -100,6 +104,7 @@ fun CeFormelInputPanel(
                         erAktiv = aktivtElement == "Cr",
                         erNoeAktivt = erNoeAktivt,
                         onClick = { onElementClick("Cr") },
+                        containerColor = inputBakgrunn,
                         modifier = Modifier.width(70.dp)
                     )
                     Text(text = "+", style = operatorStyle.copy(fontSize = 16.sp))
@@ -110,6 +115,7 @@ fun CeFormelInputPanel(
                         erAktiv = aktivtElement == "Mo",
                         erNoeAktivt = erNoeAktivt,
                         onClick = { onElementClick("Mo") },
+                        containerColor = inputBakgrunn,
                         modifier = Modifier.width(70.dp)
                     )
                     Text(text = "+", style = operatorStyle.copy(fontSize = 16.sp))
@@ -120,6 +126,7 @@ fun CeFormelInputPanel(
                         erAktiv = aktivtElement == "V",
                         erNoeAktivt = erNoeAktivt,
                         onClick = { onElementClick("V") },
+                        containerColor = inputBakgrunn,
                         modifier = Modifier.width(70.dp)
                     )
                     Text(text = ")", style = operatorStyle)
@@ -147,6 +154,7 @@ fun CeFormelInputPanel(
                         erAktiv = aktivtElement == "Ni",
                         erNoeAktivt = erNoeAktivt,
                         onClick = { onElementClick("Ni") },
+                        containerColor = inputBakgrunn,
                         modifier = Modifier.width(70.dp)
                     )
                     Text(text = "+", style = operatorStyle.copy(fontSize = 16.sp))
@@ -157,6 +165,7 @@ fun CeFormelInputPanel(
                         erAktiv = aktivtElement == "Cu",
                         erNoeAktivt = erNoeAktivt,
                         onClick = { onElementClick("Cu") },
+                        containerColor = inputBakgrunn,
                         modifier = Modifier.width(70.dp)
                     )
                     Text(text = ")", style = operatorStyle)
