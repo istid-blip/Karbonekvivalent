@@ -8,7 +8,6 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -469,6 +468,208 @@ fun <T> AppSwitcher(
 }
 
 @Composable
+fun CustomDropdownFelt(
+    verdi: String,
+    label: String,
+    underLabel: String? = null,
+    erUtvidet: Boolean,
+    erNoeAktivt: Boolean,
+    onClick: () -> Unit,
+    onDismiss: () -> Unit,
+    modifier: Modifier = Modifier,
+    dropdownInnhold: @Composable ColumnScope.() -> Unit
+) {
+    var feltBredde by remember { mutableStateOf(0.dp) }
+    val density = LocalDensity.current
+
+    val alpha by animateFloatAsState(
+        targetValue = if (erNoeAktivt && !erUtvidet) 0.4f else 1.0f,
+        label = "dropdownAlpha"
+    )
+
+    Box(
+        modifier = modifier
+            .onGloballyPositioned { coordinates ->
+                feltBredde = with(density) { coordinates.size.width.toDp() }
+            }
+            .graphicsLayer { this.alpha = alpha }
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null,
+                onClick = onClick
+            )
+            .padding(vertical = 8.dp)
+    ) {
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(42.dp),
+            shape = MaterialTheme.shapes.small,
+            border = BorderStroke(
+                width = if (erUtvidet) 2.dp else 1.dp,
+                color = MaterialTheme.colorScheme.primary
+            ),
+            color = if (erUtvidet) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f) else Color.Transparent
+        ) {
+            Row(
+                modifier = Modifier.padding(horizontal = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                AutoResizedText(
+                    text = verdi,
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Start,
+                    maxLines = 1
+                )
+                Icon(
+                    imageVector = Icons.Default.ArrowDropDown,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.graphicsLayer {
+                        rotationZ = if (erUtvidet) 180f else 0f
+                    }
+                )
+            }
+        }
+
+        Text(
+            text = label.uppercase(),
+            style = MaterialTheme.typography.labelSmall,
+            color = if (erUtvidet) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .align(Alignment.TopStart)
+                .offset(x = 12.dp, y = (-8).dp)
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(horizontal = 4.dp)
+        )
+
+        if ((underLabel != null) && !erUtvidet) {
+            Text(
+                text = underLabel,
+                style = MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp),
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .offset(x = (-12).dp, y = 8.dp)
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(horizontal = 4.dp)
+            )
+        }
+
+        val expandedState = remember { MutableTransitionState(initialState = erUtvidet) }
+        expandedState.targetState = erUtvidet
+
+        if (expandedState.currentState || expandedState.targetState) {
+            val yOffset = with(density) { 46.dp.roundToPx() }
+            
+            Popup(
+                onDismissRequest = onDismiss,
+                offset = androidx.compose.ui.unit.IntOffset(0, yOffset),
+                properties = PopupProperties(focusable = false)
+            ) {
+                AnimatedVisibility(
+                    visibleState = expandedState,
+                    enter = expandVertically(
+                        animationSpec = tween(200, easing = LinearOutSlowInEasing)
+                    ) + expandHorizontally(
+                        animationSpec = tween(250, delayMillis = 150, easing = FastOutSlowInEasing),
+                        expandFrom = Alignment.Start
+                    ) + fadeIn(tween(200)),
+                    exit = shrinkVertically(
+                        animationSpec = tween(200, easing = FastOutSlowInEasing)
+                    ) + fadeOut(tween(150))
+                ) {
+                    Surface(
+                        modifier = Modifier
+                            .widthIn(min = feltBredde, max = 280.dp)
+                            .background(MaterialTheme.colorScheme.surface)
+                            .border(
+                                width = 1.dp,
+                                color = MaterialTheme.colorScheme.outlineVariant,
+                                shape = MaterialTheme.shapes.small
+                            ),
+                        shape = MaterialTheme.shapes.small,
+                        shadowElevation = 8.dp
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(vertical = 4.dp)
+                                .heightIn(max = 400.dp)
+                                .verticalScroll(rememberScrollState())
+                        ) {
+                            dropdownInnhold()
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SelectorAndResultSection(
+    selectorVerdi: String,
+    selectorLabel: String,
+    dropdownExpanded: Boolean,
+    erNoeAktivt: Boolean,
+    resultatTittel: String,
+    resultatVerdi: String,
+    resultatUndertekst: String,
+    onToggleDropdown: () -> Unit,
+    onDismissDropdown: () -> Unit,
+    modifier: Modifier = Modifier,
+    dropdownInnhold: @Composable ColumnScope.() -> Unit
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        CustomDropdownFelt(
+            verdi = selectorVerdi,
+            label = selectorLabel,
+            erUtvidet = dropdownExpanded,
+            erNoeAktivt = erNoeAktivt,
+            onClick = onToggleDropdown,
+            onDismiss = onDismissDropdown,
+            modifier = Modifier.width(175.dp),
+            dropdownInnhold = dropdownInnhold
+        )
+
+        Spacer(modifier = Modifier.width(16.dp))
+
+        Column(horizontalAlignment = Alignment.End) {
+            Text(
+                text = resultatTittel,
+                style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = resultatVerdi,
+                style = MaterialTheme.typography.headlineLarge.copy(
+                    fontSize = 38.sp,
+                    fontFamily = FontFamily.Monospace
+                ),
+                color = MaterialTheme.colorScheme.onSurface,
+                fontWeight = FontWeight.ExtraBold
+            )
+            Text(
+                text = resultatUndertekst,
+                style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold
+            )
+        }
+    }
+}
+
+@Composable
 fun AppHeader(
     tittel: String,
     venstreIkon: ImageVector? = null,
@@ -494,8 +695,7 @@ fun AppHeader(
         if (venstreIkon != null && onVenstreKlikk != null) {
             IconButton(
                 onClick = onVenstreKlikk,
-                modifier = Modifier.align(Alignment.CenterStart).padding(start = 4.dp),
-                enabled = !dimmet
+                modifier = Modifier.align(Alignment.CenterStart).padding(start = 4.dp)
             ) {
                 Icon(
                     imageVector = venstreIkon,
@@ -529,8 +729,7 @@ fun AppHeader(
         if (hoyreIkon != null && onHoyreKlikk != null) {
             IconButton(
                 onClick = onHoyreKlikk,
-                modifier = Modifier.align(Alignment.CenterEnd).padding(end = 4.dp),
-                enabled = !dimmet
+                modifier = Modifier.align(Alignment.CenterEnd).padding(end = 4.dp)
             ) {
                 Icon(
                     imageVector = hoyreIkon,
