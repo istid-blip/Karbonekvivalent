@@ -14,6 +14,7 @@ import com.sveis.karbonekvivalent.data.CeRepository
 import com.sveis.karbonekvivalent.data.DatabaseDriverFactory
 import com.sveis.karbonekvivalent.db.CeEntry
 import com.sveis.karbonekvivalent.util.AppEnvironment
+import com.sveis.karbonekvivalent.util.rememberAppScrollStates
 import kotlinx.coroutines.launch
 
 /**
@@ -58,10 +59,8 @@ fun App(driverFactory: DatabaseDriverFactory) {
     // Henter alle lagrede bidrag som en strøm (Flow) og konverterer til Compose State
     val historyEntries by repository.getAllEntries().collectAsState(initial = emptyList())
 
-    // Bevarer rulleposisjon for de ulike skjermene
-    val homeScrollState = rememberScrollState()
-    val historyListState = rememberLazyListState()
-    val settingsScrollState = rememberScrollState()
+    // Bevarer rulleposisjon for de ulike skjermene samlet i én tilstand
+    val scrollStates = rememberAppScrollStates()
 
     AppTheme(valgtTema = currentTheme) {
         AppEnvironment(language = language) {
@@ -102,7 +101,8 @@ fun App(driverFactory: DatabaseDriverFactory) {
                                     repository.insertEntry(c, mn, cr, mo, v, ni, cu, res)
                                 }
                             },
-                            scrollState = homeScrollState,
+                            scrollState = scrollStates.homeScrollState,
+                            formulaScrollState = scrollStates.formulaScrollState,
                         )
                     }
                     Screen.History -> {
@@ -110,7 +110,7 @@ fun App(driverFactory: DatabaseDriverFactory) {
                             entries = historyEntries,
                             language = language,
                             onBack = { currentScreen = Screen.Home },
-                            listState = historyListState,
+                            listState = scrollStates.historyListState,
                         )
                     }
                     Screen.Settings -> {
@@ -125,7 +125,7 @@ fun App(driverFactory: DatabaseDriverFactory) {
                                 scope.launch { repository.updateLanguage(newLang) }
                             },
                             onLukk = { currentScreen = Screen.Home },
-                            scrollState = settingsScrollState,
+                            scrollState = scrollStates.settingsScrollState,
                         )
                     }
                 }

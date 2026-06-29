@@ -1,5 +1,6 @@
 package com.sveis.karbonekvivalent.uiKE
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -26,10 +27,10 @@ fun CeFormelInputPanel(
     copper: Double,
     aktivtElement: String?,
     onElementClick: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    scrollState: ScrollState = rememberScrollState(),
 ) {
     val erNoeAktivt = aktivtElement != null
-    val scrollState = rememberScrollState()
     val operatorStyle = MaterialTheme.typography.titleLarge.copy(
         fontWeight = FontWeight.Bold,
         color = MaterialTheme.colorScheme.primary

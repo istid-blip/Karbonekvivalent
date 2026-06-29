@@ -46,6 +46,7 @@ fun HovedSkjerm(
     onNavigateToSettings: () -> Unit,
     onSave: (Double, Double, Double, Double, Double, Double, Double, Double) -> Unit,
     scrollState: ScrollState = rememberScrollState(),
+    formulaScrollState: ScrollState = rememberScrollState(),
 ) {
     // Sørger for at skjermen ikke slår seg av mens vi er på hovedskjermen
     KeepScreenOn()
@@ -134,7 +135,8 @@ fun HovedSkjerm(
                             aktivtElement = aktivtElement,
                             onElementClick = { element ->
                                 aktivtElement = if (aktivtElement == element) null else element
-                            }
+                            },
+                            scrollState = formulaScrollState,
                         )
                     }
                 }
@@ -171,6 +173,8 @@ fun HovedSkjermRetroPreview() {
             onNavigateToHistory = {},
             onNavigateToSettings = {},
             onSave = { _, _, _, _, _, _, _, _ -> },
+            scrollState = rememberScrollState(),
+            formulaScrollState = rememberScrollState(),
         )
     }
 }
@@ -184,6 +188,8 @@ fun HovedSkjermFinPreview() {
             onNavigateToHistory = {},
             onNavigateToSettings = {},
             onSave = { _, _, _, _, _, _, _, _ -> },
+            scrollState = rememberScrollState(),
+            formulaScrollState = rememberScrollState(),
         )
     }
 }
