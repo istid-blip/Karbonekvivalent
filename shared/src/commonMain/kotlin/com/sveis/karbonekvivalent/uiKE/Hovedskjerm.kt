@@ -13,9 +13,30 @@ import androidx.compose.ui.unit.dp
 import com.sveis.karbonekvivalent.KEKalkulator
 import com.sveis.karbonekvivalent.util.KeepScreenOn
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.History
+import androidx.compose.material.icons.filled.Settings
 import karbonekvivalent.shared.generated.resources.Res
 import karbonekvivalent.shared.generated.resources.*
 import org.jetbrains.compose.resources.stringResource
+
+@Composable
+private fun HovedSkjermHeader(
+    onApneInnstillinger: () -> Unit,
+    onApneHistorikk: () -> Unit,
+    dimmet: Boolean = false,
+) {
+    AppHeader(
+        tittel = stringResource(Res.string.app_title),
+        venstreIkon = Icons.Default.Settings,
+        venstreIkonBeskrivelse = stringResource(Res.string.settings),
+        onVenstreKlikk = onApneInnstillinger,
+        hoyreIkon = Icons.Default.History,
+        hoyreIkonBeskrivelse = stringResource(Res.string.history),
+        onHoyreKlikk = onApneHistorikk,
+        dimmet = dimmet
+    )
+}
 
 @Composable
 fun HovedSkjerm(
@@ -47,8 +68,7 @@ fun HovedSkjerm(
             HovedSkjermHeader(
                 onApneInnstillinger = onNavigateToSettings,
                 onApneHistorikk = onNavigateToHistory,
-                language = language,
-                dimmet = aktivtElement != null
+                dimmet = aktivtElement != null,
             )
         },
         floatingActionButton = {

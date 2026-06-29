@@ -542,22 +542,3 @@ fun AppHeader(
         }
     }
 }
-
-@Composable
-fun HovedSkjermHeader(
-    onApneInnstillinger: () -> Unit,
-    onApneHistorikk: () -> Unit,
-    language: String,
-    dimmet: Boolean = false,
-) {
-    AppHeader(
-        tittel = stringResource(Res.string.app_title),
-        venstreIkon = Icons.Default.Settings,
-        venstreIkonBeskrivelse = stringResource(Res.string.settings),
-        onVenstreKlikk = onApneInnstillinger,
-        hoyreIkon = Icons.Default.History,
-        hoyreIkonBeskrivelse = stringResource(Res.string.history),
-        onHoyreKlikk = onApneHistorikk,
-        dimmet = dimmet
-    )
-}
