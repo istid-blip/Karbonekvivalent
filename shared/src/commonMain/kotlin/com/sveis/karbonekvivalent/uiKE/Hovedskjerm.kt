@@ -12,17 +12,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.sveis.karbonekvivalent.KEKalkulator
 import com.sveis.karbonekvivalent.util.KeepScreenOn
-import androidx.compose.material.icons.filled.History
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.ui.tooling.preview.Preview
+import karbonekvivalent.shared.generated.resources.Res
+import karbonekvivalent.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun HovedSkjerm(
     language: String,
-    onLanguageChange: (String) -> Unit,
     onNavigateToHistory: () -> Unit,
     onNavigateToSettings: () -> Unit,
-    onSave: (Double, Double, Double, Double, Double, Double, Double, Double) -> Unit
+    onSave: (Double, Double, Double, Double, Double, Double, Double, Double) -> Unit,
 ) {
     // Sørger for at skjermen ikke slår seg av mens vi er på hovedskjermen
     KeepScreenOn()
@@ -39,7 +39,7 @@ fun HovedSkjerm(
     var aktivtElement by remember { mutableStateOf<String?>(null) }
 
     val ceResult = KEKalkulator.calculateCE(
-        carbon, manganese, chromium, molybdenum, vanadium, nickel, copper
+        carbon, manganese, chromium, molybdenum, vanadium, nickel, copper,
     )
 
     Scaffold(
@@ -57,7 +57,7 @@ fun HovedSkjerm(
                     onSave(carbon, manganese, chromium, molybdenum, vanadium, nickel, copper, ceResult)
                 },
                 icon = { Text("💾") },
-                text = { Text(if(language == "no") "Lagre" else "Save") }
+                text = { Text(stringResource(Res.string.save)) }
             )
         }
     ) { padding ->
@@ -70,14 +70,14 @@ fun HovedSkjerm(
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 // Resultat-panel
-                StandardKort(tittel = if(language == "no") "Resultat CE (IIW)" else "Result CE (IIW)") {
+                StandardKort(tittel = stringResource(Res.string.result_title)) {
                     Text(
                         text = "CE: " + ceResult.toString().take(5),
                         style = MaterialTheme.typography.displayMedium,
                         color = MaterialTheme.colorScheme.primary
                     )
                     Text(
-                        text = "Sveisbarhet: ${KEKalkulator.evaluateWeldability(ceResult)}",
+                        text = "${stringResource(Res.string.weldability)}: ${KEKalkulator.evaluateWeldability(ceResult).toLocalizedText()}",
                         style = MaterialTheme.typography.bodyLarge
                     )
                 }
@@ -88,7 +88,7 @@ fun HovedSkjerm(
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
                     Text(
-                        text = if(language == "no") "KJEMISK SAMMENSÉTNING (%)" else "CHEMICAL COMPOSITION (%)",
+                        text = stringResource(Res.string.chemical_composition),
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.primary,
                         fontWeight = FontWeight.Bold,
@@ -146,10 +146,9 @@ fun HovedSkjermRetroPreview() {
     AppTheme(valgtTema = AppThemeType.RETRO) {
         HovedSkjerm(
             language = "no",
-            onLanguageChange = {},
             onNavigateToHistory = {},
             onNavigateToSettings = {},
-            onSave = { _, _, _, _, _, _, _, _ -> }
+            onSave = { _, _, _, _, _, _, _, _ -> },
         )
     }
 }
@@ -160,10 +159,9 @@ fun HovedSkjermFinPreview() {
     AppTheme(valgtTema = AppThemeType.FIN) {
         HovedSkjerm(
             language = "no",
-            onLanguageChange = {},
             onNavigateToHistory = {},
             onNavigateToSettings = {},
-            onSave = { _, _, _, _, _, _, _, _ -> }
+            onSave = { _, _, _, _, _, _, _, _ -> },
         )
     }
 }

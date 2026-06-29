@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App General -->
+    <string name="app_title">Carbon Equivalent</string>
+    <string name="back">Back</string>
+    <string name="save">Save</string>
+    <string name="share">Share</string>
+    <string name="settings">Settings</string>
+    <string name="history">History</string>
+
+    <!-- HovedSkjerm -->
+    <string name="result_title">Result CE (IIW)</string>
+    <string name="chemical_composition">CHEMICAL COMPOSITION (%)</string>
+    <string name="weldability">Weldability</string>
+    <string name="weldability_excellent">Excellent</string>
+    <string name="weldability_good">Good</string>
+    <string name="weldability_poor">Poor</string>
+
+    <!-- HistorikkSkjerm -->
+    <string name="no_saved_calculations">No saved calculations</string>
+    <string name="calculation_prefix">Calculation</string>
+    <string name="timestamp_prefix">Timestamp</string>
+
+    <!-- InnstillingerSkjerm -->
+    <string name="database_section">DATABASE</string>
+    <string name="export_history_title">Export history</string>
+    <string name="export_history_main">Save or share backup</string>
+    <string name="export_history_sub">Export all saved calculations to JSON file</string>
+    <string name="export_history_info">This allows you to keep your history if you change phones.</string>
+    <string name="save_to_device">Save to device</string>
+    <string name="share_with_app">Share with app</string>
+
+    <string name="import_history_title">Import history</string>
+    <string name="import_history_main">Restore backup</string>
+    <string name="import_history_sub">Load calculations from a JSON file</string>
+    <string name="import_history_info">Warning: This can overwrite existing data.</string>
+
+    <string name="language_section">LANGUAGE</string>
+    <string name="appearance_section">APPEARANCE</string>
+    <string name="disclaimer_title">DISCLAIMER</string>
+    <string name="disclaimer_link">Terms of use and disclaimer</string>
+    <string name="disclaimer_text">This application is intended only as a guiding tool for calculating carbon equivalents. Calculations should be verified against current standards and professional judgment.</string>
+</resources>

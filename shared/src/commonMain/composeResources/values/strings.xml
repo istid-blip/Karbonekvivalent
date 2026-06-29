@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- App General -->
+    <string name="app_title">Karbonekvivalent</string>
+    <string name="back">Tilbake</string>
+    <string name="save">Lagre</string>
+    <string name="share">Del</string>
+    <string name="settings">Innstillinger</string>
+    <string name="history">Historikk</string>
+
+    <!-- HovedSkjerm -->
+    <string name="result_title">Resultat CE (IIW)</string>
+    <string name="chemical_composition">KJEMISK SAMMENSÉTNING (%)</string>
+    <string name="weldability">Sveisbarhet</string>
+    <string name="weldability_excellent">Utmerket</string>
+    <string name="weldability_good">God</string>
+    <string name="weldability_poor">Dårlig</string>
+
+    <!-- HistorikkSkjerm -->
+    <string name="no_saved_calculations">Ingen lagrede beregninger</string>
+    <string name="calculation_prefix">Beregning</string>
+    <string name="timestamp_prefix">Tidspunkt</string>
+
+    <!-- InnstillingerSkjerm -->
+    <string name="database_section">DATABASE</string>
+    <string name="export_history_title">Eksporter historikk</string>
+    <string name="export_history_main">Lagre eller del backup</string>
+    <string name="export_history_sub">Eksporter alle lagrede beregninger til JSON-fil</string>
+    <string name="export_history_info">Dette lar deg ta vare på historikken din hvis du bytter telefon.</string>
+    <string name="save_to_device">Lagre på enhet</string>
+    <string name="share_with_app">Del med app</string>
+
+    <string name="import_history_title">Importer historikk</string>
+    <string name="import_history_main">Gjenopprett backup</string>
+    <string name="import_history_sub">Last inn beregninger fra en JSON-fil</string>
+    <string name="import_history_info">Advarsel: Dette kan overskrive eksisterende data.</string>
+
+    <string name="language_section">SPRÅK</string>
+    <string name="appearance_section">UTSEENDE</string>
+    <string name="disclaimer_title">DISCLAIMER</string>
+    <string name="disclaimer_link">Vilkår for bruk og ansvarsfraskrivelse</string>
+    <string name="disclaimer_text">Denne applikasjonen er kun ment som et veiledende verktøy for beregning av karbonekvivalenter. Beregningene bør verifiseres mot gjeldende standarder og profesjonell vurdering.</string>
+</resources>

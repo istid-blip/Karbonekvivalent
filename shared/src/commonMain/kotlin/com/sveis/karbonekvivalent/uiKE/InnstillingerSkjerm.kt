@@ -22,6 +22,9 @@ import com.sveis.karbonekvivalent.db.CeDatabase
 import com.sveis.karbonekvivalent.data.BackupManager
 import com.sveis.karbonekvivalent.util.shareBackupFile
 import com.sveis.karbonekvivalent.util.saveBackupFile
+import karbonekvivalent.shared.generated.resources.Res
+import karbonekvivalent.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @Composable
 fun InnstillingerSkjerm(
@@ -31,10 +34,10 @@ fun InnstillingerSkjerm(
     valgtSprak: String,
     onSprakValgt: (String) -> Unit,
     onLukk: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
-    var visDisclaimerArk by remember { mutableStateOf(false) }
-    var erEksportUtvidet by remember { mutableStateOf(false) }
+    var visDisclaimerArk by remember { mutableStateOf(value = false) }
+    var erEksportUtvidet by remember { mutableStateOf(value = false) }
 
     val primaryColor = MaterialTheme.colorScheme.primary
     val erNoeApen = visDisclaimerArk
@@ -53,9 +56,9 @@ fun InnstillingerSkjerm(
         // --- Header ---
         val isRetro = valgtTema == AppThemeType.RETRO
         AppHeader(
-            tittel = "INNSTILLINGER",
+            tittel = stringResource(Res.string.settings),
             hoyreIkon = Icons.AutoMirrored.Filled.ArrowForward,
-            hoyreIkonBeskrivelse = "Tilbake",
+            hoyreIkonBeskrivelse = stringResource(Res.string.back),
             onHoyreKlikk = onLukk,
             tittelAlignment = Alignment.CenterStart,
             tittelStil = MaterialTheme.typography.headlineSmall
@@ -70,13 +73,13 @@ fun InnstillingerSkjerm(
                 .padding(bottom = 80.dp)
         ) {
             // --- Database Seksjon ---
-            SettingsSectionTitle(title = "DATABASE", isRetro = isRetro)
+            SettingsSectionTitle(title = stringResource(Res.string.database_section), isRetro = isRetro)
 
             InnstillingValgKort(
-                tittel = "Eksporter historikk",
-                hovedtekst = "Lagre eller del backup",
-                undertekst = "Eksporter alle lagrede beregninger til JSON-fil",
-                infoTekst = "Dette lar deg ta vare på historikken din hvis du bytter telefon.",
+                tittel = stringResource(Res.string.export_history_title),
+                hovedtekst = stringResource(Res.string.export_history_main),
+                undertekst = stringResource(Res.string.export_history_sub),
+                infoTekst = stringResource(Res.string.export_history_info),
                 erUtvidet = erEksportUtvidet,
                 onClick = { erEksportUtvidet = !erEksportUtvidet },
                 ekstraInnhold = {
@@ -94,7 +97,7 @@ fun InnstillingerSkjerm(
                             modifier = Modifier.weight(1f),
                             shape = if (isRetro) RoundedCornerShape(0.dp) else ButtonDefaults.shape
                         ) {
-                            Text(if (valgtSprak == "no") "Lagre på enhet" else "Save to device")
+                            Text(stringResource(Res.string.save_to_device))
                         }
                         
                         OutlinedButton(
@@ -107,17 +110,17 @@ fun InnstillingerSkjerm(
                             modifier = Modifier.weight(1f),
                             shape = if (isRetro) RoundedCornerShape(0.dp) else ButtonDefaults.outlinedShape
                         ) {
-                            Text(if (valgtSprak == "no") "Del med app" else "Share with app")
+                            Text(stringResource(Res.string.share_with_app))
                         }
                     }
                 }
             )
 
             InnstillingValgKort(
-                tittel = "Importer historikk",
-                hovedtekst = "Gjenopprett backup",
-                undertekst = "Last inn beregninger fra en JSON-fil",
-                infoTekst = "Advarsel: Dette kan overskrive eksisterende data.",
+                tittel = stringResource(Res.string.import_history_title),
+                hovedtekst = stringResource(Res.string.import_history_main),
+                undertekst = stringResource(Res.string.import_history_sub),
+                infoTekst = stringResource(Res.string.import_history_info),
                 onClick = {
                     // Placeholder for import-velger
                 }
@@ -126,7 +129,7 @@ fun InnstillingerSkjerm(
             HorizontalDivider(modifier = Modifier.padding(vertical = 24.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
 
             // --- Språk-seksjon ---
-            SettingsSectionTitle(title = "SPRÅK", isRetro = isRetro)
+            SettingsSectionTitle(title = stringResource(Res.string.language_section), isRetro = isRetro)
 
             AppSwitcher(
                 selected = valgtSprak,
@@ -138,7 +141,7 @@ fun InnstillingerSkjerm(
             HorizontalDivider(modifier = Modifier.padding(vertical = 24.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
 
             // --- Tema-seksjon ---
-            SettingsSectionTitle(title = "UTSEENDE", isRetro = isRetro)
+            SettingsSectionTitle(title = stringResource(Res.string.appearance_section), isRetro = isRetro)
 
             AppSwitcher(
                 selected = valgtTema,
@@ -153,7 +156,7 @@ fun InnstillingerSkjerm(
 
             // --- Disclaimer ---
             Text(
-                text = "Vilkår for bruk og ansvarsfraskrivelse",
+                text = stringResource(Res.string.disclaimer_link),
                 style = MaterialTheme.typography.bodyMedium,
                 color = if (isRetro) primaryColor.copy(alpha = 0.5f) else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f),
                 modifier = Modifier
@@ -169,7 +172,7 @@ fun InnstillingerSkjerm(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = "KARBONEKVIVALENT",
+                    text = stringResource(Res.string.app_title).uppercase(),
                     style = MaterialTheme.typography.headlineSmall.copy(
                         fontWeight = FontWeight.Medium,
                         fontSize = 20.sp,
@@ -207,7 +210,7 @@ fun InnstillingerSkjerm(
         ) {
             Column(modifier = Modifier.fillMaxWidth().padding(8.dp)) {
                 Text(
-                    text = "DISCLAIMER",
+                    text = stringResource(Res.string.disclaimer_title),
                     style = MaterialTheme.typography.titleSmall,
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.ExtraBold,
@@ -215,7 +218,7 @@ fun InnstillingerSkjerm(
                     modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp)
                 )
                 Text(
-                    text = "Denne applikasjonen er kun ment som et veiledende verktøy for beregning av karbonekvivalenter. Beregningene bør verifiseres mot gjeldende standarder og profesjonell vurdering.",
+                    text = stringResource(Res.string.disclaimer_text),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface
                 )

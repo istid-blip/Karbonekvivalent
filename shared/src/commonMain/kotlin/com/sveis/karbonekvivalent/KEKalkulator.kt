@@ -1,12 +1,25 @@
 package com.sveis.karbonekvivalent
 
+import androidx.compose.runtime.Composable
+import karbonekvivalent.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
+
 /**
  * Definerer nivåer for sveisbarhet basert på verdien for karbonekvivalent (CE).
  */
 enum class Weldability {
     EXCELLENT,
     GOOD,
-    POOR
+    POOR;
+
+    @Composable
+    fun toLocalizedText(): String {
+        return when (this) {
+            EXCELLENT -> stringResource(Res.string.weldability_excellent)
+            GOOD -> stringResource(Res.string.weldability_good)
+            POOR -> stringResource(Res.string.weldability_poor)
+        }
+    }
 }
 
 /**
@@ -45,7 +58,7 @@ object KEKalkulator {
         molybdenum: Double,
         vanadium: Double,
         nickel: Double,
-        copper: Double
+        copper: Double,
     ): Double {
         return carbon + (manganese / 6.0) + ((chromium + molybdenum + vanadium) / 5.0) + ((nickel + copper) / 15.0)
     }

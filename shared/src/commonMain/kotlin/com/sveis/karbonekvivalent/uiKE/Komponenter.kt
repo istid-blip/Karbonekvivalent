@@ -11,7 +11,6 @@ import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material3.*
-import com.sveis.karbonekvivalent.KalkuleringsMetode
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,6 +27,9 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.draw.rotate
+import karbonekvivalent.shared.generated.resources.Res
+import karbonekvivalent.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -546,15 +548,15 @@ fun HovedSkjermHeader(
     onApneInnstillinger: () -> Unit,
     onApneHistorikk: () -> Unit,
     language: String,
-    dimmet: Boolean = false
+    dimmet: Boolean = false,
 ) {
     AppHeader(
-        tittel = "KARBONEKVIVALENT",
+        tittel = stringResource(Res.string.app_title),
         venstreIkon = Icons.Default.Settings,
-        venstreIkonBeskrivelse = if (language == "no") "Innstillinger" else "Settings",
+        venstreIkonBeskrivelse = stringResource(Res.string.settings),
         onVenstreKlikk = onApneInnstillinger,
         hoyreIkon = Icons.Default.History,
-        hoyreIkonBeskrivelse = if (language == "no") "Historikk" else "History",
+        hoyreIkonBeskrivelse = stringResource(Res.string.history),
         onHoyreKlikk = onApneHistorikk,
         dimmet = dimmet
     )

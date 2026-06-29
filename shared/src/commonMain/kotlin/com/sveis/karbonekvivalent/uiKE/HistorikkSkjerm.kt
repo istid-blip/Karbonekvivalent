@@ -10,14 +10,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.sveis.karbonekvivalent.db.CeEntry
+import karbonekvivalent.shared.generated.resources.Res
+import karbonekvivalent.shared.generated.resources.*
+import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistorikkSkjerm(
     entries: List<CeEntry>,
-    onBack: () -> Unit
+    language: String,
+    onBack: () -> Unit,
 ) {
     Scaffold(
         modifier = Modifier.swipeToDismiss(
@@ -26,9 +29,9 @@ fun HistorikkSkjerm(
         ),
         topBar = {
             AppHeader(
-                tittel = "Historikk",
+                tittel = stringResource(Res.string.history),
                 venstreIkon = Icons.AutoMirrored.Filled.ArrowBack,
-                venstreIkonBeskrivelse = "Tilbake",
+                venstreIkonBeskrivelse = stringResource(Res.string.back),
                 onVenstreKlikk = onBack,
                 tittelAlignment = Alignment.CenterEnd,
                 tittelStil = MaterialTheme.typography.headlineSmall
@@ -37,7 +40,7 @@ fun HistorikkSkjerm(
     ) { padding ->
         if (entries.isEmpty()) {
             Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
-                Text("Ingen lagrede beregninger", style = MaterialTheme.typography.bodyLarge)
+                Text(stringResource(Res.string.no_saved_calculations), style = MaterialTheme.typography.bodyLarge)
             }
         } else {
             LazyColumn(
@@ -55,7 +58,7 @@ fun HistorikkSkjerm(
 
 @Composable
 fun HistoryItem(entry: CeEntry) {
-    StandardKort(tittel = "Beregning ${entry.id}") {
+    StandardKort(tittel = "${stringResource(Res.string.calculation_prefix)} ${entry.id}") {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
@@ -66,7 +69,7 @@ fun HistoryItem(entry: CeEntry) {
                 Text("C: ${entry.carbon}%, Mn: ${entry.manganese}%", style = MaterialTheme.typography.bodySmall)
             }
             Text(
-                text = formatTimestamp(entry.timestamp),
+                text = formatTimestamp(entry.timestamp, stringResource(Res.string.timestamp_prefix)),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
             )
@@ -75,7 +78,7 @@ fun HistoryItem(entry: CeEntry) {
 }
 
 // Simple timestamp formatter for KMP
-fun formatTimestamp(timestamp: Long): String {
+fun formatTimestamp(timestamp: Long, label: String): String {
     // This is a placeholder as full date formatting often requires platform specific code or a library
-    return "Tidspunkt: $timestamp"
+    return "$label: $timestamp"
 }
