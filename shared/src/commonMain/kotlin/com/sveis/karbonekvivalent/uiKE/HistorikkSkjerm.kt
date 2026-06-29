@@ -2,7 +2,9 @@ package com.sveis.karbonekvivalent.uiKE
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
@@ -21,6 +23,7 @@ fun HistorikkSkjerm(
     entries: List<CeEntry>,
     language: String,
     onBack: () -> Unit,
+    listState: LazyListState = rememberLazyListState(),
 ) {
     Scaffold(
         modifier = Modifier.swipeToDismiss(
@@ -45,6 +48,7 @@ fun HistorikkSkjerm(
         } else {
             LazyColumn(
                 modifier = Modifier.fillMaxSize().padding(padding),
+                state = listState,
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {

@@ -1,6 +1,7 @@
 package com.sveis.karbonekvivalent.uiKE
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -44,6 +45,7 @@ fun HovedSkjerm(
     onNavigateToHistory: () -> Unit,
     onNavigateToSettings: () -> Unit,
     onSave: (Double, Double, Double, Double, Double, Double, Double, Double) -> Unit,
+    scrollState: ScrollState = rememberScrollState(),
 ) {
     // Sørger for at skjermen ikke slår seg av mens vi er på hovedskjermen
     KeepScreenOn()
@@ -85,7 +87,7 @@ fun HovedSkjerm(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .verticalScroll(rememberScrollState())
+                    .verticalScroll(scrollState)
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {

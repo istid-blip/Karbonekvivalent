@@ -2,6 +2,8 @@ package com.sveis.karbonekvivalent
 
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.*
 import com.sveis.karbonekvivalent.uiKE.HovedSkjerm
 import com.sveis.karbonekvivalent.uiKE.HistorikkSkjerm
@@ -56,6 +58,11 @@ fun App(driverFactory: DatabaseDriverFactory) {
     // Henter alle lagrede bidrag som en strøm (Flow) og konverterer til Compose State
     val historyEntries by repository.getAllEntries().collectAsState(initial = emptyList())
 
+    // Bevarer rulleposisjon for de ulike skjermene
+    val homeScrollState = rememberScrollState()
+    val historyListState = rememberLazyListState()
+    val settingsScrollState = rememberScrollState()
+
     AppTheme(valgtTema = currentTheme) {
         AppEnvironment(language = language) {
             AnimatedContent(
@@ -95,13 +102,15 @@ fun App(driverFactory: DatabaseDriverFactory) {
                                     repository.insertEntry(c, mn, cr, mo, v, ni, cu, res)
                                 }
                             },
+                            scrollState = homeScrollState,
                         )
                     }
                     Screen.History -> {
                         HistorikkSkjerm(
                             entries = historyEntries,
                             language = language,
-                            onBack = { currentScreen = Screen.Home }
+                            onBack = { currentScreen = Screen.Home },
+                            listState = historyListState,
                         )
                     }
                     Screen.Settings -> {
@@ -115,7 +124,8 @@ fun App(driverFactory: DatabaseDriverFactory) {
                             onSprakValgt = { newLang ->
                                 scope.launch { repository.updateLanguage(newLang) }
                             },
-                            onLukk = { currentScreen = Screen.Home }
+                            onLukk = { currentScreen = Screen.Home },
+                            scrollState = settingsScrollState,
                         )
                     }
                 }

@@ -1,5 +1,6 @@
 package com.sveis.karbonekvivalent.uiKE
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -35,6 +36,7 @@ fun InnstillingerSkjerm(
     onSprakValgt: (String) -> Unit,
     onLukk: () -> Unit,
     modifier: Modifier = Modifier,
+    scrollState: ScrollState = rememberScrollState(),
 ) {
     var visDisclaimerArk by remember { mutableStateOf(value = false) }
     var erEksportUtvidet by remember { mutableStateOf(value = false) }
@@ -69,7 +71,7 @@ fun InnstillingerSkjerm(
                 .fillMaxSize()
                 .padding(horizontal = 16.dp)
                 .padding(top = 60.dp)
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
                 .padding(bottom = 80.dp)
         ) {
             // --- Database Seksjon ---
