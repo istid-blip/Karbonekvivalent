@@ -173,8 +173,6 @@ fun HovedSkjermRetroPreview() {
             onNavigateToHistory = {},
             onNavigateToSettings = {},
             onSave = { _, _, _, _, _, _, _, _ -> },
-            scrollState = rememberScrollState(),
-            formulaScrollState = rememberScrollState(),
         )
     }
 }
@@ -188,8 +186,6 @@ fun HovedSkjermFinPreview() {
             onNavigateToHistory = {},
             onNavigateToSettings = {},
             onSave = { _, _, _, _, _, _, _, _ -> },
-            scrollState = rememberScrollState(),
-            formulaScrollState = rememberScrollState(),
         )
     }
 }
