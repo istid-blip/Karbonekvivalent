@@ -80,7 +80,7 @@ fun HovedSkjerm(
     var aktivtElement by remember { mutableStateOf<String?>(null) }
 
     var erILagreModus by remember { mutableStateOf(false) }
-    var jobbNavn by remember { mutableStateOf("") }
+    var alloyName by remember { mutableStateOf("") }
 
     val ceResult = KEKalkulator.calculateCE(
         carbon, manganese, chromium, molybdenum, vanadium, nickel, copper,
@@ -119,7 +119,7 @@ fun HovedSkjerm(
                                         dropdownExpanded = false
                                         if (erILagreModus) {
                                             erILagreModus = false
-                                            jobbNavn = ""
+                                            alloyName = ""
                                         }
                                     }
                                 )
@@ -231,8 +231,8 @@ fun HovedSkjerm(
                                             )
                                             Spacer(modifier = Modifier.height(8.dp))
                                             OutlinedTextField(
-                                                value = jobbNavn,
-                                                onValueChange = { jobbNavn = it },
+                                                value = alloyName,
+                                                onValueChange = { alloyName = it },
                                                 modifier = Modifier.fillMaxWidth(),
                                                 label = { Text(stringResource(Res.string.job_name_label)) },
                                                 singleLine = true,
@@ -254,7 +254,7 @@ fun HovedSkjerm(
                                                 KEButton(
                                                     onClick = { 
                                                         erILagreModus = false
-                                                        jobbNavn = ""
+                                                        alloyName = ""
                                                     },
                                                     text = stringResource(Res.string.cancel_button_caps),
                                                     isPrimary = false,
@@ -264,7 +264,7 @@ fun HovedSkjerm(
                                                     onClick = {
                                                         onSave(carbon, manganese, chromium, molybdenum, vanadium, nickel, copper, ceResult)
                                                         erILagreModus = false
-                                                        jobbNavn = ""
+                                                        alloyName = ""
                                                     },
                                                     text = stringResource(Res.string.save_button_caps),
                                                     modifier = Modifier.weight(1f)
