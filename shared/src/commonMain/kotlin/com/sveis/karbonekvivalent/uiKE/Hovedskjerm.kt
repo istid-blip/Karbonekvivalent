@@ -199,14 +199,6 @@ fun HovedSkjerm(
                                 .graphicsLayer { alpha = if (dropdownExpanded) 0.4f else 1.0f },
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            Text(
-                                text = if (erILagreModus) stringResource(Res.string.save_job_header) else stringResource(Res.string.chemical_composition),
-                                style = MaterialTheme.typography.labelSmall,
-                                color = MaterialTheme.colorScheme.primary,
-                                fontWeight = FontWeight.Bold,
-                                modifier = Modifier.padding(bottom = 4.dp)
-                            )
-
                             val formulaPanelBg = MaterialTheme.colorScheme.surfaceVariant
                             
                             Surface(
