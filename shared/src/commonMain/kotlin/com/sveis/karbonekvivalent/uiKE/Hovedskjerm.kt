@@ -199,7 +199,7 @@ fun HovedSkjerm(
                             Surface(
                                 modifier = Modifier.fillMaxWidth().height(185.dp),
                                 shape = RoundedCornerShape(16.dp),
-                                border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
+                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                                 color = formulaPanelBg
                             ) {
                                 AnimatedContent(
