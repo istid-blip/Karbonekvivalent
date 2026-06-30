@@ -48,6 +48,11 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.foundation.gestures.awaitFirstDown
+import androidx.compose.foundation.gestures.waitForUpOrCancellation
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
 fun Modifier.swipeToDismiss(
@@ -741,6 +746,191 @@ fun AppHeader(
                     tint = MaterialTheme.colorScheme.onSurface,
                     modifier = Modifier.size(32.dp)
                 )
+            }
+        }
+    }
+}
+
+@Composable
+fun KEButton(
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier,
+    enabled: Boolean = true,
+    text: String,
+    style: TextStyle? = null,
+    isPrimary: Boolean = true,
+    icon: ImageVector? = null,
+    visSkillelinje: Boolean = false,
+    useHoldToConfirm: Boolean = false
+) {
+    val currentOnClick by rememberUpdatedState(onClick)
+    val isRetro = HeatInputTheme.current == AppThemeType.RETRO
+    val scope = rememberCoroutineScope()
+    val progress = remember { Animatable(0f) }
+
+    val effectiveStyle = (style ?: if (isPrimary) MaterialTheme.typography.titleLarge else MaterialTheme.typography.titleMedium)
+        .copy(fontWeight = FontWeight.Bold)
+
+    val content: @Composable RowScope.() -> Unit = {
+        val lines = text.split("\n")
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier.fillMaxHeight()
+        ) {
+            lines.forEachIndexed { index, line ->
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center,
+                    modifier = Modifier.weight(1f, fill = false)
+                ) {
+                    if ((icon != null) && (index == lines.lastIndex)) {
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp),
+                            tint = if (isRetro) {
+                                if (isPrimary) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                            } else Color.Unspecified
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                    }
+
+                    AutoResizedText(
+                        text = if (isRetro) line.uppercase() else line,
+                        style = effectiveStyle,
+                        color = if (isRetro) {
+                            if (isPrimary) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                        } else Color.Unspecified,
+                        maxLines = 1
+                    )
+                }
+
+                // Legger til en tynn linje mellom tekstlinjene hvis ønsket
+                if (visSkillelinje && (index < lines.lastIndex)) {
+                    val linjeFarge = if (isRetro) {
+                        (if (isPrimary) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface).copy(alpha = 0.3f)
+                    } else {
+                        MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)
+                    }
+                    Box(
+                        modifier = Modifier
+                            .width(30.dp)
+                            .height(1.dp)
+                            .background(linjeFarge)
+                            .padding(vertical = 2.dp)
+                    )
+                }
+            }
+        }
+    }
+
+    val interactionModifier = if (enabled && useHoldToConfirm) {
+        Modifier.pointerInput(Unit) {
+            awaitPointerEventScope {
+                while (true) {
+                    awaitFirstDown()
+                    val animJob = scope.launch {
+                        try {
+                            progress.animateTo(1f, tween(1000, easing = LinearEasing))
+                            currentOnClick()
+                            progress.snapTo(0f)
+                        } finally {
+                            withContext(NonCancellable) {
+                                // Sørg for at vi nullstiller hvis vi ble avbrutt akkurat ved målgang
+                                if (progress.value >= 1f) {
+                                    progress.snapTo(0f)
+                                }
+                            }
+                        }
+                    }
+
+                    waitForUpOrCancellation()
+                    animJob.cancel()
+                    if (progress.value > 0f) {
+                        scope.launch {
+                            progress.animateTo(0f, tween(250))
+                        }
+                    }
+                }
+            }
+        }
+    } else {
+        Modifier.clickable(enabled = enabled, onClick = onClick)
+    }
+
+    val progressFillColor = if (isRetro) {
+        (if (isPrimary) Color(0xFF33FF4D) else Color(0xFF33FF4D)).copy(alpha = 0.2f)
+    } else {
+        // Bruker en mer synlig farge for FIN-temaet, f.eks hvit med litt alpha
+        // eller en mørkere variant av primærfargen
+        Color.White.copy(alpha = 0.35f)
+    }
+
+    val progressDrawModifier = Modifier.drawBehind {
+        if (progress.value > 0f) {
+            val fillWidth = size.width * progress.value
+            drawRect(
+                color = progressFillColor,
+                size = Size(fillWidth, size.height)
+            )
+        }
+    }
+
+    if (isRetro) {
+        val alpha by animateFloatAsState(if (enabled) 1f else 0.4f, label = "buttonAlpha")
+        val color = if (isPrimary) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+
+        Box(
+            modifier = modifier
+                .height(56.dp)
+                .graphicsLayer { this.alpha = alpha }
+                .background(if (isPrimary) color.copy(alpha = 0.1f) else Color.Transparent)
+                .then(progressDrawModifier)
+                .border(
+                    width = if (isPrimary) 2.dp else 1.dp,
+                    color = color.copy(alpha = if (isPrimary) 1f else 0.5f)
+                )
+                .then(interactionModifier)
+                .padding(horizontal = 12.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                content()
+            }
+        }
+    } else {
+        Surface(
+            modifier = modifier
+                .height(56.dp)
+                .then(interactionModifier),
+            shape = MaterialTheme.shapes.small,
+            color = if (isPrimary) {
+                if (enabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.primary.copy(alpha = 0.38f)
+            } else {
+                if (enabled) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.38f)
+            },
+            contentColor = if (isPrimary) {
+                if (enabled) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.38f)
+            } else {
+                if (enabled) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+            }
+        ) {
+            Box(
+                modifier = Modifier.fillMaxSize().then(progressDrawModifier),
+                contentAlignment = Alignment.Center
+            ) {
+                Row(
+                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    content()
+                }
             }
         }
     }

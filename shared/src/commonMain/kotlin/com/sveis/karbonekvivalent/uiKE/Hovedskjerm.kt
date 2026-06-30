@@ -1,5 +1,7 @@
 package com.sveis.karbonekvivalent.uiKE
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.clickable
@@ -77,41 +79,35 @@ fun HovedSkjerm(
 
     var aktivtElement by remember { mutableStateOf<String?>(null) }
 
+    var erILagreModus by remember { mutableStateOf(false) }
+    var jobbNavn by remember { mutableStateOf("") }
+
     val ceResult = KEKalkulator.calculateCE(
         carbon, manganese, chromium, molybdenum, vanadium, nickel, copper,
     )
 
     Scaffold(
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = {
-                    onSave(carbon, manganese, chromium, molybdenum, vanadium, nickel, copper, ceResult)
-                },
-                icon = { Text("💾") },
-                text = { Text(stringResource(Res.string.save)) }
-            )
-        }
+        // FAB fjernet
     ) { padding ->
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
+                .padding(bottom = padding.calculateBottomPadding())
         ) {
             Column(
                 modifier = Modifier.fillMaxSize()
             ) {
-                // Header flyttet inn hit for å ha bedre kontroll på layering (zIndex)
+                // Header
                 HovedSkjermHeader(
                     onApneInnstillinger = onNavigateToSettings,
                     onApneHistorikk = onNavigateToHistory,
-                    dimmet = aktivtElement != null,
+                    dimmet = aktivtElement != null || erILagreModus,
                     modifier = Modifier.zIndex(2f)
                 )
 
                 Box(modifier = Modifier.fillMaxSize()) {
-                    // Scrim for å fange opp klikk utenfor dropdown når den er åpen
-                    // Ligger under headeren takket være zIndex og rekkefølge
-                    if (dropdownExpanded) {
+                    // Scrim
+                    if (dropdownExpanded || erILagreModus) {
                         Box(
                             modifier = Modifier
                                 .fillMaxSize()
@@ -119,7 +115,13 @@ fun HovedSkjerm(
                                 .clickable(
                                     interactionSource = remember { MutableInteractionSource() },
                                     indication = null,
-                                    onClick = { dropdownExpanded = false }
+                                    onClick = { 
+                                        dropdownExpanded = false
+                                        if (erILagreModus) {
+                                            erILagreModus = false
+                                            jobbNavn = ""
+                                        }
+                                    }
                                 )
                         )
                     }
@@ -136,7 +138,7 @@ fun HovedSkjerm(
                             selectorVerdi = selectedAlloy?.name ?: "",
                             selectorLabel = "STÅLLEGERING",
                             dropdownExpanded = dropdownExpanded,
-                            erNoeAktivt = aktivtElement != null,
+                            erNoeAktivt = aktivtElement != null || erILagreModus,
                             resultatTittel = stringResource(Res.string.result_title),
                             resultatVerdi = ceResult.toString().take(4).replace(".", ","),
                             resultatUndertekst = KEKalkulator.evaluateWeldability(ceResult).toLocalizedText(),
@@ -184,7 +186,7 @@ fun HovedSkjerm(
                             }
                         )
 
-                        // Input-seksjon (Kombinert formel og input)
+                        // Seksjon for input eller lagring
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -193,7 +195,7 @@ fun HovedSkjerm(
                             verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
                             Text(
-                                text = stringResource(Res.string.chemical_composition),
+                                text = if (erILagreModus) stringResource(Res.string.save_job_header) else stringResource(Res.string.chemical_composition),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Bold,
@@ -205,26 +207,102 @@ fun HovedSkjerm(
                             Surface(
                                 modifier = Modifier.fillMaxWidth().height(185.dp),
                                 shape = RoundedCornerShape(16.dp),
-                                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                                border = BorderStroke(2.dp, MaterialTheme.colorScheme.primary),
                                 color = formulaPanelBg
                             ) {
-                                CeFormelInputPanel(
-                                    carbon = carbon,
-                                    manganese = manganese,
-                                    chromium = chromium,
-                                    molybdenum = molybdenum,
-                                    vanadium = vanadium,
-                                    nickel = nickel,
-                                    copper = copper,
-                                    aktivtElement = aktivtElement,
-                                    onElementClick = { element ->
-                                        aktivtElement = if (aktivtElement == element) null else element
-                                    },
-                                    inputBakgrunn = formulaPanelBg,
-                                    scrollState = formulaScrollState,
-                                )
+                                AnimatedContent(
+                                    targetState = erILagreModus,
+                                    transitionSpec = {
+                                        fadeIn(tween(220, delayMillis = 90)) + scaleIn(initialScale = 0.92f, animationSpec = tween(220, delayMillis = 90)) togetherWith
+                                        fadeOut(tween(90))
+                                    }
+                                ) { targetIsSaving ->
+                                    if (targetIsSaving) {
+                                        // Lagrings-visning med tekstfelt
+                                        Column(
+                                            modifier = Modifier.padding(16.dp),
+                                            verticalArrangement = Arrangement.Center
+                                        ) {
+                                            Text(
+                                                text = stringResource(Res.string.save_job_header), 
+                                                style = MaterialTheme.typography.labelSmall, 
+                                                color = MaterialTheme.colorScheme.primary, 
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                            Spacer(modifier = Modifier.height(8.dp))
+                                            OutlinedTextField(
+                                                value = jobbNavn,
+                                                onValueChange = { jobbNavn = it },
+                                                modifier = Modifier.fillMaxWidth(),
+                                                label = { Text(stringResource(Res.string.job_name_label)) },
+                                                singleLine = true,
+                                                shape = RoundedCornerShape(12.dp),
+                                                colors = TextFieldDefaults.colors(
+                                                    focusedContainerColor = Color.Transparent,
+                                                    unfocusedContainerColor = Color.Transparent,
+                                                    focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                                                    unfocusedTextColor = MaterialTheme.colorScheme.onSurface
+                                                )
+                                            )
+                                            
+                                            Spacer(modifier = Modifier.height(16.dp))
+                                            
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                            ) {
+                                                KEButton(
+                                                    onClick = { 
+                                                        erILagreModus = false
+                                                        jobbNavn = ""
+                                                    },
+                                                    text = stringResource(Res.string.cancel_button_caps),
+                                                    isPrimary = false,
+                                                    modifier = Modifier.weight(1f)
+                                                )
+                                                KEButton(
+                                                    onClick = {
+                                                        onSave(carbon, manganese, chromium, molybdenum, vanadium, nickel, copper, ceResult)
+                                                        erILagreModus = false
+                                                        jobbNavn = ""
+                                                    },
+                                                    text = stringResource(Res.string.save_button_caps),
+                                                    modifier = Modifier.weight(1f)
+                                                )
+                                            }
+                                        }
+                                    } else {
+                                        // Standard formel-visning
+                                        CeFormelInputPanel(
+                                            carbon = carbon,
+                                            manganese = manganese,
+                                            chromium = chromium,
+                                            molybdenum = molybdenum,
+                                            vanadium = vanadium,
+                                            nickel = nickel,
+                                            copper = copper,
+                                            aktivtElement = aktivtElement,
+                                            onElementClick = { element ->
+                                                aktivtElement = if (aktivtElement == element) null else element
+                                            },
+                                            inputBakgrunn = formulaPanelBg,
+                                            scrollState = formulaScrollState,
+                                        )
+                                    }
+                                }
                             }
                         }
+
+                        if (!erILagreModus) {
+                            KEButton(
+                                onClick = { erILagreModus = true },
+                                text = stringResource(Res.string.save),
+                                modifier = Modifier.fillMaxWidth(),
+                                useHoldToConfirm = false
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.weight(1f))
                     }
 
                     // Ny VelgeContainer som et overlegg for rullehjulet

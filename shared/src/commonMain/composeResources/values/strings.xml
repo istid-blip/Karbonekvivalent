@@ -16,6 +16,12 @@
     <string name="weldability_good">God</string>
     <string name="weldability_poor">Dårlig</string>
 
+    <!-- Lagring -->
+    <string name="save_job_header">LAGRE BEREGNING</string>
+    <string name="job_name_label">Legeringsnavn / ID</string>
+    <string name="cancel_button_caps">AVBRYT</string>
+    <string name="save_button_caps">LAGRE</string>
+
     <!-- HistorikkSkjerm -->
     <string name="no_saved_calculations">Ingen lagrede beregninger</string>
     <string name="calculation_prefix">Beregning</string>
