@@ -131,73 +131,68 @@ fun HovedSkjerm(
                             .fillMaxSize()
                             .verticalScroll(scrollState)
                             .padding(horizontal = 16.dp)
-                            .padding(top = 8.dp, bottom = 32.dp),
-                        verticalArrangement = Arrangement.spacedBy(24.dp)
+                            .padding(top = 8.dp, bottom = 8.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         // --- SEKSJON 1: VALG OG RESULTAT ---
-                        Column(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
-                        ) {
-                            SelectorAndResultSection(
-                                selectorVerdi = selectedAlloy?.name ?: "",
-                                selectorLabel = "STÅLLEGERING",
-                                dropdownExpanded = dropdownExpanded,
-                                erNoeAktivt = aktivtElement != null || erILagreModus,
-                                resultatTittel = stringResource(Res.string.result_title),
-                                resultatVerdi = ceResult.toString().take(4).replace(".", ","),
-                                resultatUndertekst = KEKalkulator.evaluateWeldability(ceResult).toLocalizedText(),
-                                onToggleDropdown = { dropdownExpanded = !dropdownExpanded },
-                                onDismissDropdown = { dropdownExpanded = false },
-                                containerColor = MaterialTheme.colorScheme.background,
-                                dropdownInnhold = {
-                                    defaultSteelAlloys.forEach { alloy ->
-                                        DropdownMenuItem(
-                                            text = {
-                                                Column(modifier = Modifier.fillMaxWidth()) {
-                                                    Text(
-                                                        text = alloy.name,
-                                                        style = MaterialTheme.typography.bodyLarge,
-                                                        fontWeight = FontWeight.Bold,
-                                                        color = MaterialTheme.colorScheme.onSurface,
-                                                        maxLines = 1,
-                                                        overflow = TextOverflow.Ellipsis
-                                                    )
-                                                    if (alloy.name != "Egendefinert") {
-                                                        Text(
-                                                            text = "C: ${alloy.carbon}%, Mn: ${alloy.manganese}%",
-                                                            style = MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp),
-                                                            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
-                                                            fontWeight = FontWeight.Bold
-                                                        )
-                                                    }
-                                                }
-                                            },
-                                            onClick = {
-                                                selectedAlloy = alloy
+                        SelectorAndResultSection(
+                            selectorVerdi = selectedAlloy?.name ?: "",
+                            selectorLabel = "STÅLLEGERING",
+                            dropdownExpanded = dropdownExpanded,
+                            erNoeAktivt = aktivtElement != null || erILagreModus,
+                            resultatTittel = stringResource(Res.string.result_title),
+                            resultatVerdi = ceResult.toString().take(4).replace(".", ","),
+                            resultatUndertekst = KEKalkulator.evaluateWeldability(ceResult).toLocalizedText(),
+                            onToggleDropdown = { dropdownExpanded = !dropdownExpanded },
+                            onDismissDropdown = { dropdownExpanded = false },
+                            containerColor = MaterialTheme.colorScheme.background,
+                            dropdownInnhold = {
+                                defaultSteelAlloys.forEach { alloy ->
+                                    DropdownMenuItem(
+                                        text = {
+                                            Column(modifier = Modifier.fillMaxWidth()) {
+                                                Text(
+                                                    text = alloy.name,
+                                                    style = MaterialTheme.typography.bodyLarge,
+                                                    fontWeight = FontWeight.Bold,
+                                                    color = MaterialTheme.colorScheme.onSurface,
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis
+                                                )
                                                 if (alloy.name != "Egendefinert") {
-                                                    carbon = alloy.carbon
-                                                    manganese = alloy.manganese
-                                                    chromium = alloy.chromium
-                                                    molybdenum = alloy.molybdenum
-                                                    vanadium = alloy.vanadium
-                                                    nickel = alloy.nickel
-                                                    copper = alloy.copper
+                                                    Text(
+                                                        text = "C: ${alloy.carbon}%, Mn: ${alloy.manganese}%",
+                                                        style = MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp),
+                                                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
+                                                        fontWeight = FontWeight.Bold
+                                                    )
                                                 }
-                                                dropdownExpanded = false
                                             }
-                                        )
-                                    }
+                                        },
+                                        onClick = {
+                                            selectedAlloy = alloy
+                                            if (alloy.name != "Egendefinert") {
+                                                carbon = alloy.carbon
+                                                manganese = alloy.manganese
+                                                chromium = alloy.chromium
+                                                molybdenum = alloy.molybdenum
+                                                vanadium = alloy.vanadium
+                                                nickel = alloy.nickel
+                                                copper = alloy.copper
+                                            }
+                                            dropdownExpanded = false
+                                        }
+                                    )
                                 }
-                            )
-                        }
+                            }
+                        )
 
                         // --- SEKSJON 2: FORMEL OG LAGRING ---
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .graphicsLayer { alpha = if (dropdownExpanded) 0.4f else 1.0f },
-                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             val formulaPanelBg = MaterialTheme.colorScheme.surfaceVariant
                             
