@@ -49,11 +49,6 @@ fun geistMonoFontFamily() = FontFamily(
     Font(Res.font.geist_mono_bold, FontWeight.Bold)
 )
 
-@Composable
-fun geistSansFontFamily() = FontFamily(
-    Font(Res.font.geist_medium, FontWeight.Medium)
-)
-
 val LocalUseEdgeToEdge = staticCompositionLocalOf { true }
 
 // Egne stiler for TallVelger-komponenten
@@ -128,16 +123,33 @@ private val RetroFarger = darkColorScheme(
     outlineVariant = Color(0xFF004400)
 )
 
+
 @Composable
 fun getFinTypography(): Typography {
-    val geistSans = geistSansFontFamily()
     return Typography(
-        headlineLarge = TextStyle(fontFamily = geistSans, fontWeight = FontWeight.ExtraBold, fontSize = 32.sp),
-        headlineSmall = TextStyle(fontFamily = geistSans, fontWeight = FontWeight.ExtraBold, fontSize = 24.sp),
-        titleMedium = TextStyle(fontFamily = geistSans, fontWeight = FontWeight.Bold, fontSize = 16.sp),
-        labelSmall = TextStyle(fontFamily = geistSans, fontWeight = FontWeight.Bold, fontSize = 11.sp)
+        headlineLarge = TextStyle(
+            fontFamily = FontFamily.SansSerif,
+            fontWeight = FontWeight.ExtraBold,
+            fontSize = 32.sp
+        ),
+        headlineSmall = TextStyle(
+            fontFamily = FontFamily.SansSerif,
+            fontWeight = FontWeight.ExtraBold,
+            fontSize = 24.sp
+        ),
+        titleMedium = TextStyle(
+            fontFamily = FontFamily.SansSerif,
+            fontWeight = FontWeight.Bold,
+            fontSize = 16.sp
+        ),
+        labelSmall = TextStyle(
+            fontFamily = FontFamily.SansSerif,
+            fontWeight = FontWeight.Bold,
+            fontSize = 11.sp
+        )
     )
 }
+
 
 // Bruker den eksisterende geistMonoFontFamily() definisjonen
 @Composable
