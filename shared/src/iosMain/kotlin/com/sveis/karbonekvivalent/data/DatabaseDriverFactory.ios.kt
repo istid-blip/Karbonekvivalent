@@ -6,6 +6,6 @@ import com.sveis.karbonekvivalent.db.CeDatabase
 
 actual class DatabaseDriverFactory {
     actual fun createDriver(): SqlDriver {
-        return NativeSqliteDriver(CeDatabase.Schema, "ce_database.db")
+        return NativeSqliteDriver(CeDatabase.Schema, "ce_database_v2.db")
     }
 }

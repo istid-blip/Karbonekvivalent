@@ -11,7 +11,12 @@ data class SteelAlloy(
     val molybdenum: Double = 0.0,
     val vanadium: Double = 0.0,
     val nickel: Double = 0.0,
-    val copper: Double = 0.0
+    val copper: Double = 0.0,
+    val silicon: Double = 0.0,
+    val sulfur: Double = 0.0,
+    val phosphorus: Double = 0.0,
+    val niobium: Double = 0.0,
+    val titanium: Double = 0.0
 )
 
 val defaultSteelAlloys = listOf(

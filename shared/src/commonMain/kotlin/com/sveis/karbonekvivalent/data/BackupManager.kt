@@ -36,7 +36,13 @@ object BackupManager {
                 vanadium = it.vanadium,
                 nickel = it.nickel,
                 copper = it.copper,
-                ceResult = it.ceResult
+                ceResult = it.ceResult,
+                iso15608Group = it.iso15608Group,
+                silicon = it.silicon,
+                sulfur = it.sulfur,
+                phosphorus = it.phosphorus,
+                niobium = it.niobium,
+                titanium = it.titanium
             )
         }
         
@@ -65,6 +71,8 @@ object BackupManager {
                 queries.insertEntry(
                     timestamp = it.timestamp,
                     name = it.name,
+                    ceResult = it.ceResult,
+                    iso15608Group = it.iso15608Group,
                     carbon = it.carbon,
                     manganese = it.manganese,
                     chromium = it.chromium,
@@ -72,7 +80,11 @@ object BackupManager {
                     vanadium = it.vanadium,
                     nickel = it.nickel,
                     copper = it.copper,
-                    ceResult = it.ceResult
+                    silicon = it.silicon,
+                    sulfur = it.sulfur,
+                    phosphorus = it.phosphorus,
+                    niobium = it.niobium,
+                    titanium = it.titanium
                 )
             }
         }

@@ -15,6 +15,10 @@
     <string name="weldability_excellent">Excellent</string>
     <string name="weldability_good">Good</string>
     <string name="weldability_poor">Poor</string>
+    <string name="iso_group_label">ISO 15608 Group</string>
+    <string name="not_relevant">Not relevant</string>
+
+
 
     <!-- HistorikkSkjerm -->
     <string name="no_saved_calculations">No saved calculations</string>

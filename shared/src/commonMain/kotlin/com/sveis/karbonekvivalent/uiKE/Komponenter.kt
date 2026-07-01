@@ -631,6 +631,10 @@ fun SelectorAndResultSection(
     onDismissDropdown: () -> Unit,
     modifier: Modifier = Modifier,
     containerColor: Color = MaterialTheme.colorScheme.surface,
+    isoGruppe: String? = null,
+    isoGruppeLabel: String? = null,
+    isCeRelevant: Boolean = true,
+    notRelevantLabel: String = "Ikke relevant",
     dropdownInnhold: @Composable ColumnScope.() -> Unit
 ) {
     Row(
@@ -656,24 +660,39 @@ fun SelectorAndResultSection(
             Text(
                 text = resultatTittel,
                 style = MaterialTheme.typography.labelSmall.copy(fontSize = 10.sp),
-                color = MaterialTheme.colorScheme.onSurface,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = if (isCeRelevant) 1f else 0.4f),
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = resultatVerdi,
+                text = if (isCeRelevant) resultatVerdi else "-",
                 style = MaterialTheme.typography.headlineLarge.copy(
                     fontSize = 38.sp,
                     fontFamily = FontFamily.Monospace
                 ),
-                color = MaterialTheme.colorScheme.onSurface,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = if (isCeRelevant) 1f else 0.4f),
                 fontWeight = FontWeight.ExtraBold
             )
             Text(
-                text = resultatUndertekst,
+                text = if (isCeRelevant) resultatUndertekst else notRelevantLabel,
                 style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
-                color = MaterialTheme.colorScheme.primary,
+                color = if (isCeRelevant) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
                 fontWeight = FontWeight.Bold
             )
+            
+            if (isoGruppe != null) {
+                Text(
+                    text = isoGruppeLabel ?: "ISO 15608",
+                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 9.sp),
+                    color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
+                    modifier = Modifier.padding(top = 4.dp)
+                )
+                Text(
+                    text = isoGruppe,
+                    style = MaterialTheme.typography.labelSmall.copy(fontSize = 11.sp),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    fontWeight = FontWeight.Bold
+                )
+            }
         }
     }
 }

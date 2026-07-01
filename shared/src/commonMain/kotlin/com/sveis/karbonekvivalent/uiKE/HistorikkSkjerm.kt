@@ -16,6 +16,9 @@ import androidx.compose.ui.unit.dp
 import com.sveis.karbonekvivalent.db.CeEntry
 import karbonekvivalent.shared.generated.resources.Res
 import karbonekvivalent.shared.generated.resources.*
+import kotlinx.datetime.Instant
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 import org.jetbrains.compose.resources.stringResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -83,6 +86,9 @@ fun HistoryItem(entry: CeEntry) {
         ) {
             Column {
                 Text("CE: ${entry.ceResult.toString().take(5)}", style = MaterialTheme.typography.titleLarge)
+                if (entry.iso15608Group != null) {
+                    Text(entry.iso15608Group, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
+                }
                 Text("C: ${entry.carbon}%, Mn: ${entry.manganese}%", style = MaterialTheme.typography.bodySmall)
             }
             Text(
@@ -96,6 +102,18 @@ fun HistoryItem(entry: CeEntry) {
 
 // Simple timestamp formatter for KMP
 fun formatTimestamp(timestamp: Long, label: String): String {
-    // This is a placeholder as full date formatting often requires platform specific code or a library
-    return "$label: $timestamp"
+    return try {
+        val instant = Instant.fromEpochMilliseconds(timestamp)
+        val localDateTime = instant.toLocalDateTime(TimeZone.currentSystemDefault())
+        
+        val day = localDateTime.dayOfMonth.toString().padStart(2, '0')
+        val month = localDateTime.monthNumber.toString().padStart(2, '0')
+        val year = localDateTime.year
+        val hour = localDateTime.hour.toString().padStart(2, '0')
+        val minute = localDateTime.minute.toString().padStart(2, '0')
+        
+        "$label: $day.$month.$year $hour:$minute"
+    } catch (_: Exception) {
+        "$label: $timestamp"
+    }
 }

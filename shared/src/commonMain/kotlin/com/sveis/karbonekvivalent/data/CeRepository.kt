@@ -49,10 +49,18 @@ class CeRepository(driver: SqlDriver) {
         nickel: Double,
         copper: Double,
         ceResult: Double,
+        iso15608Group: String?,
+        silicon: Double = 0.0,
+        sulfur: Double = 0.0,
+        phosphorus: Double = 0.0,
+        niobium: Double = 0.0,
+        titanium: Double = 0.0
     ) = withContext(Dispatchers.IO) {
         queries.insertEntry(
             timestamp = getCurrentTimeMillis(),
             name = name,
+            ceResult = ceResult,
+            iso15608Group = iso15608Group,
             carbon = carbon,
             manganese = manganese,
             chromium = chromium,
@@ -60,7 +68,11 @@ class CeRepository(driver: SqlDriver) {
             vanadium = vanadium,
             nickel = nickel,
             copper = copper,
-            ceResult = ceResult
+            silicon = silicon,
+            sulfur = sulfur,
+            phosphorus = phosphorus,
+            niobium = niobium,
+            titanium = titanium
         )
     }
 }

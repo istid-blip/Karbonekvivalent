@@ -29,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.Settings
+import com.sveis.karbonekvivalent.data.Iso15608Classifier
 import com.sveis.karbonekvivalent.data.SteelAlloy
 import com.sveis.karbonekvivalent.data.defaultSteelAlloys
 import karbonekvivalent.shared.generated.resources.Res
@@ -60,7 +61,7 @@ fun HovedSkjerm(
     language: String,
     onNavigateToHistory: () -> Unit,
     onNavigateToSettings: () -> Unit,
-    onSave: (String, Double, Double, Double, Double, Double, Double, Double, Double) -> Unit,
+    onSave: (String, Double, Double, Double, Double, Double, Double, Double, Double, String, Double, Double, Double, Double, Double) -> Unit,
     scrollState: ScrollState = rememberScrollState(),
     formulaScrollState: ScrollState = rememberScrollState(),
 ) {
@@ -74,6 +75,12 @@ fun HovedSkjerm(
     var nickel by remember { mutableStateOf(0.0) }
     var copper by remember { mutableStateOf(0.0) }
 
+    var silicon by remember { mutableStateOf(0.0) }
+    var sulfur by remember { mutableStateOf(0.0) }
+    var phosphorus by remember { mutableStateOf(0.0) }
+    var niobium by remember { mutableStateOf(0.0) }
+    var titanium by remember { mutableStateOf(0.0) }
+
     var selectedAlloy by remember { mutableStateOf<SteelAlloy?>(defaultSteelAlloys.first()) }
     var dropdownExpanded by remember { mutableStateOf(false) }
     var aktivtElement by remember { mutableStateOf<String?>(null) }
@@ -82,6 +89,12 @@ fun HovedSkjerm(
 
     val focusRequester = remember { FocusRequester() }
     val ceResult = KEKalkulator.calculateCE(carbon, manganese, chromium, molybdenum, vanadium, nickel, copper)
+    val classification = Iso15608Classifier.classify(
+        carbon, manganese, chromium, molybdenum, vanadium, nickel, copper,
+        silicon, sulfur, phosphorus, niobium, titanium
+    )
+    val isoGroup = classification.groupName
+    val isCeRelevant = classification.isCeRelevant
     val useEdgeToEdge = LocalUseEdgeToEdge.current
 
     Box(
@@ -116,6 +129,10 @@ fun HovedSkjerm(
                         resultatTittel = stringResource(Res.string.result_title),
                         resultatVerdi = ceResult.toString().take(4).replace(".", ","),
                         resultatUndertekst = KEKalkulator.evaluateWeldability(ceResult).toLocalizedText(),
+                        isoGruppe = isoGroup,
+                        isoGruppeLabel = stringResource(Res.string.iso_group_label),
+                        isCeRelevant = isCeRelevant,
+                        notRelevantLabel = stringResource(Res.string.not_relevant),
                         onToggleDropdown = { dropdownExpanded = !dropdownExpanded },
                         onDismissDropdown = { dropdownExpanded = false },
                         containerColor = MaterialTheme.colorScheme.background,
@@ -136,6 +153,8 @@ fun HovedSkjerm(
                                             carbon = alloy.carbon; manganese = alloy.manganese
                                             chromium = alloy.chromium; molybdenum = alloy.molybdenum
                                             vanadium = alloy.vanadium; nickel = alloy.nickel; copper = alloy.copper
+                                            silicon = alloy.silicon; sulfur = alloy.sulfur; phosphorus = alloy.phosphorus
+                                            niobium = alloy.niobium; titanium = alloy.titanium
                                         }
                                         dropdownExpanded = false
                                     }
@@ -250,7 +269,8 @@ fun HovedSkjerm(
                                     onClick = {
                                         onSave(
                                             alloyName, carbon, manganese, chromium, molybdenum,
-                                            vanadium, nickel, copper, ceResult
+                                            vanadium, nickel, copper, ceResult, isoGroup,
+                                            silicon, sulfur, phosphorus, niobium, titanium
                                         )
                                         erILagreModus = false
                                         alloyName = ""
@@ -291,7 +311,7 @@ fun HovedSkjerm(
 @Composable
 fun HovedSkjermRetroPreview() {
     AppTheme(valgtTema = AppThemeType.RETRO) {
-        HovedSkjerm("no", {}, {}, { _, _, _, _, _, _, _, _, _ -> }, rememberScrollState(), rememberScrollState())
+        HovedSkjerm("no", {}, {}, { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ -> }, rememberScrollState(), rememberScrollState())
     }
 }
 
@@ -299,6 +319,6 @@ fun HovedSkjermRetroPreview() {
 @Composable
 fun HovedSkjermFinPreview() {
     AppTheme(valgtTema = AppThemeType.FIN) {
-        HovedSkjerm("no", {}, {}, { _, _, _, _, _, _, _, _, _ -> }, rememberScrollState(), rememberScrollState())
+        HovedSkjerm("no", {}, {}, { _, _, _, _, _, _, _, _, _, _, _, _, _, _, _ -> }, rememberScrollState(), rememberScrollState())
     }
 }

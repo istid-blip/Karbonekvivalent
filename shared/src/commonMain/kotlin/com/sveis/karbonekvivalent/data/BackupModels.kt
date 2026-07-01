@@ -13,7 +13,13 @@ data class CeEntryBackup(
     val vanadium: Double,
     val nickel: Double,
     val copper: Double,
-    val ceResult: Double
+    val ceResult: Double,
+    val iso15608Group: String? = null,
+    val silicon: Double = 0.0,
+    val sulfur: Double = 0.0,
+    val phosphorus: Double = 0.0,
+    val niobium: Double = 0.0,
+    val titanium: Double = 0.0
 )
 
 @Serializable

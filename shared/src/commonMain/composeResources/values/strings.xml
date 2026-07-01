@@ -15,6 +15,10 @@
     <string name="weldability_excellent">Utmerket</string>
     <string name="weldability_good">God</string>
     <string name="weldability_poor">Dårlig</string>
+    <string name="iso_group_label">ISO 15608 Gruppe</string>
+    <string name="not_relevant">Ikke relevant</string>
+
+
 
     <!-- Lagring -->
     <string name="save_job_header">LAGRE BEREGNING</string>

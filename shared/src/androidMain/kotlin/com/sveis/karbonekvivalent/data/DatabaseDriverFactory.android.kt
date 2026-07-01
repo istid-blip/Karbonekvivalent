@@ -7,6 +7,6 @@ import com.sveis.karbonekvivalent.db.CeDatabase
 
 actual class DatabaseDriverFactory(private val context: Context) {
     actual fun createDriver(): SqlDriver {
-        return AndroidSqliteDriver(CeDatabase.Schema, context, "ce_database.db")
+        return AndroidSqliteDriver(CeDatabase.Schema, context, "ce_database_v2.db")
     }
 }
