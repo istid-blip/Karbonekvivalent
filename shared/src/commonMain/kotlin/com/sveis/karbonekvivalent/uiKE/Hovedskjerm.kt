@@ -145,19 +145,19 @@ fun HovedSkjerm(
                     )
 
                     // Formel og Lagre-knapp
-                    val formulaPanelBg = MaterialTheme.colorScheme.surfaceVariant
+
                     Surface(
                         modifier = Modifier.fillMaxWidth().height(185.dp),
                         shape = RoundedCornerShape(16.dp),
                         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-                        color = formulaPanelBg
+                        color = MaterialTheme.colorScheme.surfaceVariant,
                     ) {
                         CeFormelInputPanel(
                             carbon = carbon, manganese = manganese, chromium = chromium,
                             molybdenum = molybdenum, vanadium = vanadium, nickel = nickel, copper = copper,
                             aktivtElement = aktivtElement,
                             onElementClick = { element -> aktivtElement = if (aktivtElement == element) null else element },
-                            inputBakgrunn = formulaPanelBg,
+                            inputBakgrunn = MaterialTheme.colorScheme.surfaceVariant,
                             scrollState = formulaScrollState,
                         )
                     }
@@ -204,9 +204,9 @@ fun HovedSkjerm(
                     Surface(
                         modifier = Modifier.fillMaxWidth().height(185.dp),
                         shape = RoundedCornerShape(16.dp),
-                        color = MaterialTheme.colorScheme.surface,
-                        tonalElevation = 8.dp,
-                        shadowElevation = 12.dp
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+
                     ) {
                         Column(
                             modifier = Modifier.padding(16.dp),
