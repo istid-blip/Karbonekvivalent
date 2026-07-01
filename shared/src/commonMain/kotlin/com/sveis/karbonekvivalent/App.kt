@@ -12,7 +12,6 @@ import com.sveis.karbonekvivalent.uiKE.AppTheme
 import com.sveis.karbonekvivalent.uiKE.AppThemeType
 import com.sveis.karbonekvivalent.data.CeRepository
 import com.sveis.karbonekvivalent.data.DatabaseDriverFactory
-import com.sveis.karbonekvivalent.db.CeEntry
 import com.sveis.karbonekvivalent.util.AppEnvironment
 import kotlinx.coroutines.launch
 

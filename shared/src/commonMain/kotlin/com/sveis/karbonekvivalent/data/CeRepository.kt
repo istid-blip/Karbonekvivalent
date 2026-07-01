@@ -39,7 +39,7 @@ class CeRepository(driver: SqlDriver) {
         queries.updateLanguage(language)
     }
 
-    fun insertEntry(
+    suspend fun insertEntry(
         name: String?,
         carbon: Double,
         manganese: Double,
@@ -49,7 +49,7 @@ class CeRepository(driver: SqlDriver) {
         nickel: Double,
         copper: Double,
         ceResult: Double,
-    ) {
+    ) = withContext(Dispatchers.IO) {
         queries.insertEntry(
             timestamp = getCurrentTimeMillis(),
             name = name,
