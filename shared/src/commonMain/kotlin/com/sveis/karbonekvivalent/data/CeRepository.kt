@@ -10,6 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import com.sveis.karbonekvivalent.db.CeEntry
 import com.sveis.karbonekvivalent.db.AppSettings
+import com.sveis.karbonekvivalent.getCurrentTimeMillis
 import kotlinx.coroutines.withContext
 
 class CeRepository(driver: SqlDriver) {
@@ -39,6 +40,7 @@ class CeRepository(driver: SqlDriver) {
     }
 
     fun insertEntry(
+        name: String?,
         carbon: Double,
         manganese: Double,
         chromium: Double,
@@ -49,7 +51,8 @@ class CeRepository(driver: SqlDriver) {
         ceResult: Double,
     ) {
         queries.insertEntry(
-            timestamp = 0L,
+            timestamp = getCurrentTimeMillis(),
+            name = name,
             carbon = carbon,
             manganese = manganese,
             chromium = chromium,

@@ -28,6 +28,7 @@ object BackupManager {
         val entriesBackup = dbEntries.map { 
             CeEntryBackup(
                 timestamp = it.timestamp,
+                name = it.name,
                 carbon = it.carbon,
                 manganese = it.manganese,
                 chromium = it.chromium,
@@ -63,6 +64,7 @@ object BackupManager {
             backup.entries.forEach { 
                 queries.insertEntry(
                     timestamp = it.timestamp,
+                    name = it.name,
                     carbon = it.carbon,
                     manganese = it.manganese,
                     chromium = it.chromium,

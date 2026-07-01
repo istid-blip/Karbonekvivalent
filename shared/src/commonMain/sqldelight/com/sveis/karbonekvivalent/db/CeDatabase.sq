@@ -1,6 +1,7 @@
 CREATE TABLE CeEntry (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     timestamp INTEGER NOT NULL,
+    name TEXT,
     carbon REAL NOT NULL,
     manganese REAL NOT NULL,
     chromium REAL NOT NULL,
@@ -12,8 +13,8 @@ CREATE TABLE CeEntry (
 );
 
 insertEntry:
-INSERT INTO CeEntry(timestamp, carbon, manganese, chromium, molybdenum, vanadium, nickel, copper, ceResult)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+INSERT INTO CeEntry(timestamp, name, carbon, manganese, chromium, molybdenum, vanadium, nickel, copper, ceResult)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
 
 selectAllEntries:
 SELECT * FROM CeEntry ORDER BY timestamp DESC;

@@ -5,6 +5,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class CeEntryBackup(
     val timestamp: Long,
+    val name: String? = null,
     val carbon: Double,
     val manganese: Double,
     val chromium: Double,

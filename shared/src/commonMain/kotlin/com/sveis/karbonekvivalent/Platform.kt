@@ -17,3 +17,8 @@ interface Platform {
  * Returnerer en instans av den nåværende plattformens implementasjon.
  */
 expect fun getPlatform(): Platform
+
+/**
+ * Returnerer nåværende tid i millisekunder siden epoch (1. januar 1970).
+ */
+expect fun getCurrentTimeMillis(): Long

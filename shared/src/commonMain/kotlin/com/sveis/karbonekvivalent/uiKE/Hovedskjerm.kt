@@ -14,6 +14,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.font.FontWeight
@@ -58,7 +60,7 @@ fun HovedSkjerm(
     language: String,
     onNavigateToHistory: () -> Unit,
     onNavigateToSettings: () -> Unit,
-    onSave: (Double, Double, Double, Double, Double, Double, Double, Double) -> Unit,
+    onSave: (String, Double, Double, Double, Double, Double, Double, Double, Double) -> Unit,
     scrollState: ScrollState = rememberScrollState(),
     formulaScrollState: ScrollState = rememberScrollState(),
 ) {
@@ -81,6 +83,8 @@ fun HovedSkjerm(
 
     var erILagreModus by remember { mutableStateOf(false) }
     var alloyName by remember { mutableStateOf("") }
+
+    val focusRequester = remember { FocusRequester() }
 
     val ceResult = KEKalkulator.calculateCE(
         carbon, manganese, chromium, molybdenum, vanadium, nickel, copper,
@@ -191,6 +195,7 @@ fun HovedSkjerm(
                         Column(
                             modifier = Modifier
                                 .fillMaxWidth()
+                                .zIndex(if (erILagreModus) 2f else 0f)
                                 .graphicsLayer { alpha = if (dropdownExpanded) 0.4f else 1.0f },
                             verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
@@ -210,6 +215,10 @@ fun HovedSkjerm(
                                     }
                                 ) { targetIsSaving ->
                                     if (targetIsSaving) {
+                                        LaunchedEffect(targetIsSaving) {
+                                            kotlinx.coroutines.delay(300)
+                                            focusRequester.requestFocus()
+                                        }
                                         // Lagrings-visning med tekstfelt
                                         Column(
                                             modifier = Modifier.padding(16.dp),
@@ -225,7 +234,9 @@ fun HovedSkjerm(
                                             OutlinedTextField(
                                                 value = alloyName,
                                                 onValueChange = { alloyName = it },
-                                                modifier = Modifier.fillMaxWidth(),
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .focusRequester(focusRequester),
                                                 label = { Text(stringResource(Res.string.job_name_label)) },
                                                 singleLine = true,
                                                 shape = RoundedCornerShape(12.dp),
@@ -254,7 +265,7 @@ fun HovedSkjerm(
                                                 )
                                                 KEButton(
                                                     onClick = {
-                                                        onSave(carbon, manganese, chromium, molybdenum, vanadium, nickel, copper, ceResult)
+                                                        onSave(alloyName, carbon, manganese, chromium, molybdenum, vanadium, nickel, copper, ceResult)
                                                         erILagreModus = false
                                                         alloyName = ""
                                                     },
@@ -329,7 +340,7 @@ fun HovedSkjermRetroPreview() {
             language = "no",
             onNavigateToHistory = {},
             onNavigateToSettings = {},
-            onSave = { _, _, _, _, _, _, _, _ -> },
+            onSave = { _, _, _, _, _, _, _, _, _ -> },
             scrollState = rememberScrollState(),
             formulaScrollState = rememberScrollState(),
         )
@@ -344,7 +355,7 @@ fun HovedSkjermFinPreview() {
             language = "no",
             onNavigateToHistory = {},
             onNavigateToSettings = {},
-            onSave = { _, _, _, _, _, _, _, _ -> },
+            onSave = { _, _, _, _, _, _, _, _, _ -> },
             scrollState = rememberScrollState(),
             formulaScrollState = rememberScrollState(),
         )

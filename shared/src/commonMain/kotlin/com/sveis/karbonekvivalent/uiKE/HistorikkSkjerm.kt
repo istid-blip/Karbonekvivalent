@@ -62,7 +62,13 @@ fun HistorikkSkjerm(
 
 @Composable
 fun HistoryItem(entry: CeEntry) {
-    StandardKort(tittel = "${stringResource(Res.string.calculation_prefix)} ${entry.id}") {
+    val displayTitle = if (!entry.name.isNullOrBlank()) {
+        entry.name
+    } else {
+        "${stringResource(Res.string.calculation_prefix)} ${entry.id}"
+    }
+
+    StandardKort(tittel = displayTitle) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,

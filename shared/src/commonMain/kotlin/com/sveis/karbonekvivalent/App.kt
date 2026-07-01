@@ -98,9 +98,9 @@ fun App(driverFactory: DatabaseDriverFactory) {
                             language = language,
                             onNavigateToHistory = { currentScreen = Screen.History },
                             onNavigateToSettings = { currentScreen = Screen.Settings },
-                            onSave = { c, mn, cr, mo, v, ni, cu, res ->
+                            onSave = { name, c, mn, cr, mo, v, ni, cu, res ->
                                 scope.launch {
-                                    repository.insertEntry(c, mn, cr, mo, v, ni, cu, res)
+                                    repository.insertEntry(name, c, mn, cr, mo, v, ni, cu, res)
                                 }
                             },
                             scrollState = homeScrollState,
