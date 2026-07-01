@@ -82,192 +82,197 @@ fun HovedSkjerm(
 
     val focusRequester = remember { FocusRequester() }
     val ceResult = KEKalkulator.calculateCE(carbon, manganese, chromium, molybdenum, vanadium, nickel, copper)
+    val useEdgeToEdge = LocalUseEdgeToEdge.current
 
-    Scaffold { padding ->
-        Box(modifier = Modifier.fillMaxSize().padding(padding)) {
-            Column(modifier = Modifier.fillMaxSize()) {
-                HovedSkjermHeader(
-                    onApneInnstillinger = onNavigateToSettings,
-                    onApneHistorikk = onNavigateToHistory,
-                    dimmet = aktivtElement != null || erILagreModus,
-                    modifier = Modifier.zIndex(2f)
-                )
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .then(if (useEdgeToEdge) Modifier.statusBarsPadding() else Modifier)
+    ) {
+        Column(modifier = Modifier.fillMaxSize()) {
+            HovedSkjermHeader(
+                onApneInnstillinger = onNavigateToSettings,
+                onApneHistorikk = onNavigateToHistory,
+                dimmet = aktivtElement != null || erILagreModus,
+                modifier = Modifier.zIndex(2f)
+            )
 
-                Box(modifier = Modifier.fillMaxSize()) {
-                    // Liste over innhold
-                    Column(
+            Box(modifier = Modifier.fillMaxSize()) {
+                // Liste over innhold
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(scrollState)
+                        .padding(horizontal = 16.dp)
+                        .padding(top = 8.dp, bottom = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    SelectorAndResultSection(
+                        selectorVerdi = selectedAlloy?.name ?: "",
+                        selectorLabel = "STÅLLEGERING",
+                        dropdownExpanded = dropdownExpanded,
+                        erNoeAktivt = aktivtElement != null || erILagreModus,
+                        resultatTittel = stringResource(Res.string.result_title),
+                        resultatVerdi = ceResult.toString().take(4).replace(".", ","),
+                        resultatUndertekst = KEKalkulator.evaluateWeldability(ceResult).toLocalizedText(),
+                        onToggleDropdown = { dropdownExpanded = !dropdownExpanded },
+                        onDismissDropdown = { dropdownExpanded = false },
+                        containerColor = MaterialTheme.colorScheme.background,
+                        dropdownInnhold = {
+                            defaultSteelAlloys.forEach { alloy ->
+                                DropdownMenuItem(
+                                    text = {
+                                        Column(modifier = Modifier.fillMaxWidth()) {
+                                            Text(alloy.name, fontWeight = FontWeight.Bold)
+                                            if (alloy.name != "Egendefinert") {
+                                                Text("C: ${alloy.carbon}%, Mn: ${alloy.manganese}%", style = MaterialTheme.typography.labelSmall)
+                                            }
+                                        }
+                                    },
+                                    onClick = {
+                                        selectedAlloy = alloy
+                                        if (alloy.name != "Egendefinert") {
+                                            carbon = alloy.carbon; manganese = alloy.manganese
+                                            chromium = alloy.chromium; molybdenum = alloy.molybdenum
+                                            vanadium = alloy.vanadium; nickel = alloy.nickel; copper = alloy.copper
+                                        }
+                                        dropdownExpanded = false
+                                    }
+                                )
+                            }
+                        }
+                    )
+
+                    // Formel og Lagre-knapp
+                    val formulaPanelBg = MaterialTheme.colorScheme.surfaceVariant
+                    Surface(
+                        modifier = Modifier.fillMaxWidth().height(185.dp)
+                            .graphicsLayer { alpha = if (erILagreModus) 0.1f else 1.0f },
+                        shape = RoundedCornerShape(16.dp),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
+                        color = formulaPanelBg
+                    ) {
+                        CeFormelInputPanel(
+                            carbon = carbon, manganese = manganese, chromium = chromium,
+                            molybdenum = molybdenum, vanadium = vanadium, nickel = nickel, copper = copper,
+                            aktivtElement = aktivtElement,
+                            onElementClick = { element -> aktivtElement = if (aktivtElement == element) null else element },
+                            inputBakgrunn = formulaPanelBg,
+                            scrollState = formulaScrollState,
+                        )
+                    }
+
+                    if (!erILagreModus) {
+                        KEButton(
+                            onClick = { erILagreModus = true },
+                            text = stringResource(Res.string.save),
+                            modifier = Modifier.fillMaxWidth(),
+                            useHoldToConfirm = false
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+
+                // SCRIM: Ligger over innholdet men under dialogen
+                if (dropdownExpanded || erILagreModus) {
+                    Box(
                         modifier = Modifier
                             .fillMaxSize()
-                            .verticalScroll(scrollState)
-                            .padding(horizontal = 16.dp)
-                            .padding(top = 8.dp, bottom = 8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        SelectorAndResultSection(
-                            selectorVerdi = selectedAlloy?.name ?: "",
-                            selectorLabel = "STÅLLEGERING",
-                            dropdownExpanded = dropdownExpanded,
-                            erNoeAktivt = aktivtElement != null || erILagreModus,
-                            resultatTittel = stringResource(Res.string.result_title),
-                            resultatVerdi = ceResult.toString().take(4).replace(".", ","),
-                            resultatUndertekst = KEKalkulator.evaluateWeldability(ceResult).toLocalizedText(),
-                            onToggleDropdown = { dropdownExpanded = !dropdownExpanded },
-                            onDismissDropdown = { dropdownExpanded = false },
-                            containerColor = MaterialTheme.colorScheme.background,
-                            dropdownInnhold = {
-                                defaultSteelAlloys.forEach { alloy ->
-                                    DropdownMenuItem(
-                                        text = {
-                                            Column(modifier = Modifier.fillMaxWidth()) {
-                                                Text(alloy.name, fontWeight = FontWeight.Bold)
-                                                if (alloy.name != "Egendefinert") {
-                                                    Text("C: ${alloy.carbon}%, Mn: ${alloy.manganese}%", style = MaterialTheme.typography.labelSmall)
-                                                }
-                                            }
-                                        },
-                                        onClick = {
-                                            selectedAlloy = alloy
-                                            if (alloy.name != "Egendefinert") {
-                                                carbon = alloy.carbon; manganese = alloy.manganese
-                                                chromium = alloy.chromium; molybdenum = alloy.molybdenum
-                                                vanadium = alloy.vanadium; nickel = alloy.nickel; copper = alloy.copper
-                                            }
-                                            dropdownExpanded = false
-                                        }
-                                    )
+                            .zIndex(50f)
+                            .background(Color.Black.copy(alpha = if (erILagreModus) 0.3f else 0.0f))
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = { 
+                                    if (dropdownExpanded) dropdownExpanded = false 
+                                    // Vi lukker ikke lagre-modus via scrim for å unngå feiltrykk
                                 }
-                            }
-                        )
-
-                        // Formel og Lagre-knapp
-                        val formulaPanelBg = MaterialTheme.colorScheme.surfaceVariant
-                        Surface(
-                            modifier = Modifier.fillMaxWidth().height(185.dp)
-                                .graphicsLayer { alpha = if (erILagreModus) 0.1f else 1.0f },
-                            shape = RoundedCornerShape(16.dp),
-                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
-                            color = formulaPanelBg
-                        ) {
-                            CeFormelInputPanel(
-                                carbon = carbon, manganese = manganese, chromium = chromium,
-                                molybdenum = molybdenum, vanadium = vanadium, nickel = nickel, copper = copper,
-                                aktivtElement = aktivtElement,
-                                onElementClick = { element -> aktivtElement = if (aktivtElement == element) null else element },
-                                inputBakgrunn = formulaPanelBg,
-                                scrollState = formulaScrollState,
                             )
-                        }
+                    )
+                }
 
-                        if (!erILagreModus) {
-                            KEButton(
-                                onClick = { erILagreModus = true },
-                                text = stringResource(Res.string.save),
-                                modifier = Modifier.fillMaxWidth(),
-                                useHoldToConfirm = false
+                // LAGRE-DIALOG: Ligger helt øverst
+                androidx.compose.animation.AnimatedVisibility(
+                    visible = erILagreModus,
+                    enter = fadeIn() + scaleIn(initialScale = 0.95f),
+                    exit = fadeOut() + scaleOut(targetScale = 0.95f),
+                    modifier = Modifier
+                        .zIndex(100f)
+                        .align(Alignment.TopCenter)
+                        .padding(top = 8.dp) // Flyttet lenger opp (fra 180.dp til 80.dp)
+                        .padding(horizontal = 16.dp)
+                ) {
+                    Surface(
+                        modifier = Modifier.fillMaxWidth().wrapContentHeight(),
+                        shape = RoundedCornerShape(24.dp),
+                        color = MaterialTheme.colorScheme.surface,
+                        tonalElevation = 8.dp,
+                        shadowElevation = 12.dp
+                    ) {
+                        Column(modifier = Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
+                            Text(stringResource(Res.string.save_job_header), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+                            
+                            LaunchedEffect(erILagreModus) {
+                                if (erILagreModus) {
+                                    kotlinx.coroutines.delay(300)
+                                    focusRequester.requestFocus()
+                                }
+                            }
+
+                            OutlinedTextField(
+                                value = alloyName,
+                                onValueChange = { alloyName = it },
+                                modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
+                                label = { Text(stringResource(Res.string.job_name_label)) },
+                                singleLine = true,
+                                shape = RoundedCornerShape(12.dp)
                             )
-                        }
-
-                        Spacer(modifier = Modifier.weight(1f))
-                    }
-
-                    // SCRIM: Ligger over innholdet men under dialogen
-                    if (dropdownExpanded || erILagreModus) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .zIndex(50f)
-                                .background(Color.Black.copy(alpha = if (erILagreModus) 0.3f else 0.0f))
-                                .clickable(
-                                    interactionSource = remember { MutableInteractionSource() },
-                                    indication = null,
-                                    onClick = { 
-                                        if (dropdownExpanded) dropdownExpanded = false 
-                                        // Vi lukker ikke lagre-modus via scrim for å unngå feiltrykk
-                                    }
+                            
+                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                                KEButton(
+                                    onClick = { erILagreModus = false; alloyName = "" },
+                                    text = stringResource(Res.string.cancel_button_caps),
+                                    isPrimary = false,
+                                    modifier = Modifier.weight(1f)
                                 )
-                        )
-                    }
-
-                    // LAGRE-DIALOG: Ligger helt øverst
-                    androidx.compose.animation.AnimatedVisibility(
-                        visible = erILagreModus,
-                        enter = fadeIn() + scaleIn(initialScale = 0.95f),
-                        exit = fadeOut() + scaleOut(targetScale = 0.95f),
-                        modifier = Modifier
-                            .zIndex(100f)
-                            .align(Alignment.TopCenter)
-                            .padding(top = 8.dp) // Flyttet lenger opp (fra 180.dp til 80.dp)
-                            .padding(horizontal = 16.dp)
-                    ) {
-                        Surface(
-                            modifier = Modifier.fillMaxWidth().wrapContentHeight(),
-                            shape = RoundedCornerShape(24.dp),
-                            color = MaterialTheme.colorScheme.surface,
-                            tonalElevation = 8.dp,
-                            shadowElevation = 12.dp
-                        ) {
-                            Column(modifier = Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                                Text(stringResource(Res.string.save_job_header), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
-                                
-                                LaunchedEffect(erILagreModus) {
-                                    if (erILagreModus) {
-                                        kotlinx.coroutines.delay(300)
-                                        focusRequester.requestFocus()
-                                    }
-                                }
-
-                                OutlinedTextField(
-                                    value = alloyName,
-                                    onValueChange = { alloyName = it },
-                                    modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
-                                    label = { Text(stringResource(Res.string.job_name_label)) },
-                                    singleLine = true,
-                                    shape = RoundedCornerShape(12.dp)
+                                KEButton(
+                                    onClick = {
+                                        onSave(alloyName, carbon, manganese, chromium, molybdenum, vanadium, nickel, copper, ceResult)
+                                        erILagreModus = false
+                                        alloyName = ""
+                                    },
+                                    text = stringResource(Res.string.save_button_caps),
+                                    modifier = Modifier.weight(1f)
                                 )
-                                
-                                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                                    KEButton(
-                                        onClick = { erILagreModus = false; alloyName = "" },
-                                        text = stringResource(Res.string.cancel_button_caps),
-                                        isPrimary = false,
-                                        modifier = Modifier.weight(1f)
-                                    )
-                                    KEButton(
-                                        onClick = {
-                                            onSave(alloyName, carbon, manganese, chromium, molybdenum, vanadium, nickel, copper, ceResult)
-                                            erILagreModus = false
-                                            alloyName = ""
-                                        },
-                                        text = stringResource(Res.string.save_button_caps),
-                                        modifier = Modifier.weight(1f)
-                                    )
-                                }
                             }
                         }
                     }
+                }
 
-                    // VELGECONTAINER: Også et overlegg
-                    VelgeContainer(
-                        visArk = aktivtElement != null,
-                        fraToppen = false,
-                        onLukkBehov = { aktivtElement = null }
-                    ) {
-                        aktivtElement?.let { element ->
-                            when (element) {
-                                "C" -> TallVelgerMotor(label = "Carbon", verdi = carbon, onVerdiChange = { carbon = it })
-                                "Mn" -> TallVelgerMotor(label = "Manganese", verdi = manganese, onVerdiChange = { manganese = it }, steg = 0.05)
-                                "Cr" -> TallVelgerMotor(label = "Chromium", verdi = chromium, onVerdiChange = { chromium = it })
-                                "Mo" -> TallVelgerMotor(label = "Molybdenum", verdi = molybdenum, onVerdiChange = { molybdenum = it })
-                                "V" -> TallVelgerMotor(label = "Vanadium", verdi = vanadium, onVerdiChange = { vanadium = it })
-                                "Ni" -> TallVelgerMotor(label = "Nickel", verdi = nickel, onVerdiChange = { nickel = it })
-                                "Cu" -> TallVelgerMotor(label = "Copper", verdi = copper, onVerdiChange = { copper = it })
-                            }
+                // VELGECONTAINER: Også et overlegg
+                VelgeContainer(
+                    visArk = aktivtElement != null,
+                    fraToppen = false,
+                    onLukkBehov = { aktivtElement = null }
+                ) {
+                    aktivtElement?.let { element ->
+                        when (element) {
+                            "C" -> TallVelgerMotor(label = "Carbon", verdi = carbon, onVerdiChange = { carbon = it })
+                            "Mn" -> TallVelgerMotor(label = "Manganese", verdi = manganese, onVerdiChange = { manganese = it }, steg = 0.05)
+                            "Cr" -> TallVelgerMotor(label = "Chromium", verdi = chromium, onVerdiChange = { chromium = it })
+                            "Mo" -> TallVelgerMotor(label = "Molybdenum", verdi = molybdenum, onVerdiChange = { molybdenum = it })
+                            "V" -> TallVelgerMotor(label = "Vanadium", verdi = vanadium, onVerdiChange = { vanadium = it })
+                            "Ni" -> TallVelgerMotor(label = "Nickel", verdi = nickel, onVerdiChange = { nickel = it })
+                            "Cu" -> TallVelgerMotor(label = "Copper", verdi = copper, onVerdiChange = { copper = it })
                         }
                     }
                 }
             }
         }
     }
+
 }
 
 @Preview

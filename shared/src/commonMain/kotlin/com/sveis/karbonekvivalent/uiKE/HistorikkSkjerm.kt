@@ -1,5 +1,6 @@
 package com.sveis.karbonekvivalent.uiKE
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
@@ -25,29 +26,34 @@ fun HistorikkSkjerm(
     onBack: () -> Unit,
     listState: LazyListState = rememberLazyListState(),
 ) {
-    Scaffold(
-        modifier = Modifier.swipeToDismiss(
-            onDismiss = onBack,
-            swipeDirection = SwipeDirection.RIGHT
-        ),
-        topBar = {
-            AppHeader(
-                tittel = stringResource(Res.string.history),
-                venstreIkon = Icons.AutoMirrored.Filled.ArrowBack,
-                venstreIkonBeskrivelse = stringResource(Res.string.back),
-                onVenstreKlikk = onBack,
-                tittelAlignment = Alignment.CenterEnd,
-                tittelStil = MaterialTheme.typography.headlineSmall
+    val useEdgeToEdge = LocalUseEdgeToEdge.current
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
+            .then(if (useEdgeToEdge) Modifier.statusBarsPadding() else Modifier)
+            .swipeToDismiss(
+                onDismiss = onBack,
+                swipeDirection = SwipeDirection.RIGHT
             )
-        }
-    ) { padding ->
+    ) {
+        AppHeader(
+            tittel = stringResource(Res.string.history),
+            venstreIkon = Icons.AutoMirrored.Filled.ArrowBack,
+            venstreIkonBeskrivelse = stringResource(Res.string.back),
+            onVenstreKlikk = onBack,
+            tittelAlignment = Alignment.CenterEnd,
+            tittelStil = MaterialTheme.typography.headlineSmall
+        )
+
         if (entries.isEmpty()) {
-            Box(modifier = Modifier.fillMaxSize().padding(padding), contentAlignment = Alignment.Center) {
+            Box(modifier = Modifier.fillMaxSize().weight(1f), contentAlignment = Alignment.Center) {
                 Text(stringResource(Res.string.no_saved_calculations), style = MaterialTheme.typography.bodyLarge)
             }
         } else {
             LazyColumn(
-                modifier = Modifier.fillMaxSize().padding(padding),
+                modifier = Modifier.fillMaxSize().weight(1f),
                 state = listState,
                 contentPadding = PaddingValues(16.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -58,6 +64,7 @@ fun HistorikkSkjerm(
             }
         }
     }
+
 }
 
 @Composable
