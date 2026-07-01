@@ -94,7 +94,7 @@ fun HovedSkjerm(
             HovedSkjermHeader(
                 onApneInnstillinger = onNavigateToSettings,
                 onApneHistorikk = onNavigateToHistory,
-                dimmet = aktivtElement != null || erILagreModus,
+                dimmet = aktivtElement != null,
                 modifier = Modifier.zIndex(2f)
             )
 
@@ -147,8 +147,7 @@ fun HovedSkjerm(
                     // Formel og Lagre-knapp
                     val formulaPanelBg = MaterialTheme.colorScheme.surfaceVariant
                     Surface(
-                        modifier = Modifier.fillMaxWidth().height(185.dp)
-                            .graphicsLayer { alpha = if (erILagreModus) 0.1f else 1.0f },
+                        modifier = Modifier.fillMaxWidth().height(185.dp),
                         shape = RoundedCornerShape(16.dp),
                         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant),
                         color = formulaPanelBg
@@ -163,16 +162,15 @@ fun HovedSkjerm(
                         )
                     }
 
-                    if (!erILagreModus) {
-                        KEButton(
-                            onClick = { erILagreModus = true },
-                            text = stringResource(Res.string.save),
-                            modifier = Modifier.fillMaxWidth(),
-                            useHoldToConfirm = false
-                        )
-                    }
+                    KEButton(
+                        onClick = { erILagreModus = true },
+                        text = stringResource(Res.string.save),
+                        modifier = Modifier.fillMaxWidth(),
+                        useHoldToConfirm = false,
+                        enabled = !erILagreModus
+                    )
 
-                    Spacer(modifier = Modifier.weight(1f))
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
 
                 // SCRIM: Ligger over innholdet men under dialogen
@@ -181,7 +179,7 @@ fun HovedSkjerm(
                         modifier = Modifier
                             .fillMaxSize()
                             .zIndex(50f)
-                            .background(Color.Black.copy(alpha = if (erILagreModus) 0.3f else 0.0f))
+                            .background(if (dropdownExpanded) Color.Black.copy(alpha = 0.3f) else Color.Transparent)
                             .clickable(
                                 interactionSource = remember { MutableInteractionSource() },
                                 indication = null,
@@ -193,7 +191,6 @@ fun HovedSkjerm(
                     )
                 }
 
-                // LAGRE-DIALOG: Ligger helt øverst
                 androidx.compose.animation.AnimatedVisibility(
                     visible = erILagreModus,
                     enter = fadeIn() + scaleIn(initialScale = 0.95f),
@@ -201,36 +198,48 @@ fun HovedSkjerm(
                     modifier = Modifier
                         .zIndex(100f)
                         .align(Alignment.TopCenter)
-                        .padding(top = 8.dp) // Flyttet lenger opp (fra 180.dp til 80.dp)
+                        .padding(top = 85.dp) // Flyttet for å matche plasseringen til formelfeltet
                         .padding(horizontal = 16.dp)
                 ) {
                     Surface(
-                        modifier = Modifier.fillMaxWidth().wrapContentHeight(),
-                        shape = RoundedCornerShape(24.dp),
+                        modifier = Modifier.fillMaxWidth().height(185.dp),
+                        shape = RoundedCornerShape(16.dp),
                         color = MaterialTheme.colorScheme.surface,
                         tonalElevation = 8.dp,
                         shadowElevation = 12.dp
                     ) {
-                        Column(modifier = Modifier.padding(24.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                            Text(stringResource(Res.string.save_job_header), style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
-                            
-                            LaunchedEffect(erILagreModus) {
-                                if (erILagreModus) {
-                                    kotlinx.coroutines.delay(300)
-                                    focusRequester.requestFocus()
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            verticalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                                Text(
+                                    stringResource(Res.string.save_job_header),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold
+                                )
+
+                                LaunchedEffect(erILagreModus) {
+                                    if (erILagreModus) {
+                                        kotlinx.coroutines.delay(300)
+                                        focusRequester.requestFocus()
+                                    }
                                 }
+
+                                OutlinedTextField(
+                                    value = alloyName,
+                                    onValueChange = { alloyName = it },
+                                    modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
+                                    label = { Text(stringResource(Res.string.job_name_label)) },
+                                    singleLine = true,
+                                    shape = RoundedCornerShape(12.dp)
+                                )
                             }
 
-                            OutlinedTextField(
-                                value = alloyName,
-                                onValueChange = { alloyName = it },
-                                modifier = Modifier.fillMaxWidth().focusRequester(focusRequester),
-                                label = { Text(stringResource(Res.string.job_name_label)) },
-                                singleLine = true,
-                                shape = RoundedCornerShape(12.dp)
-                            )
-                            
-                            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
                                 KEButton(
                                     onClick = { erILagreModus = false; alloyName = "" },
                                     text = stringResource(Res.string.cancel_button_caps),
@@ -239,7 +248,10 @@ fun HovedSkjerm(
                                 )
                                 KEButton(
                                     onClick = {
-                                        onSave(alloyName, carbon, manganese, chromium, molybdenum, vanadium, nickel, copper, ceResult)
+                                        onSave(
+                                            alloyName, carbon, manganese, chromium, molybdenum,
+                                            vanadium, nickel, copper, ceResult
+                                        )
                                         erILagreModus = false
                                         alloyName = ""
                                     },
